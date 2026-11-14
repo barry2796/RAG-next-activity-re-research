@@ -1,0 +1,367 @@
+INFORMATION ON THE RUN
+
+Batch Size: 8
+Embedding Model ID: sentence-transformers/all-MiniLM-L12-v2
+Vector Space Dimension: 384
+Evaluation Modality: evaluation-attributes
+Event Log: sepsis.xes
+LLM ID: Qwen/Qwen2.5-3B-Instruct
+Max Generated Tokens LLM: 1536
+Number of Documents in the Context: 3
+RAG: True
+Event Attributes: {'In': 'Infusion', 'orgr': 'org:group', 'Di': 'DiagnosticECG', 'SI': 'SIRSCritLeucos', 'Hy': 'Hypoxie', 'Ag': 'Age', 'titi': 'time:timestamp', 'Ol': 'Oligurie', 'Le': 'Leucocytes', 'CR': 'CRP', 'La': 'LacticAcid'}
+Activities: {'Release C', 'Leucocytes', 'ER Triage', 'LacticAcid', 'IV Antibiotics', 'IV Liquid', 'Admission NC', 'Release D', 'Admission IC', 'Release A', 'Release E', 'ER Sepsis Triage', 'Release B', 'Return ER', 'ER Registration', 'CRP'}
+
+-----------------------------------
+
+Query: <|im_start|>system
+Act as a Process Mining assistant specialized in predictive process monitoring.
+Your task is to predict the next activity immediately after the last activity of the provided prefix of an execution trace. Please reason step by step, and put your final answer within \boxed{}, i.e., formatted as follows: '\boxed{predicted_activity_name}'.
+
+Decision Rules:
+1. Find the trace in the past traces that is equal or contains the sequence of activities of the prefix to predict.
+2. For the selected trace, identify the next activity and return it as the predicted next activity for that prefix.
+3. If multiple traces are equal or contain the sequence of activities of the prefix to predict, do not directly consider the most frequent next activity but choose as the next activity the one immediately following the last of the prefix in the matching trace reasoning on the similarity of its values for the attributes in 'Values' with the values for the attributes of the prefix.
+
+Allowed concept:names of activities for your predictions are: {'Release C', 'Leucocytes', 'ER Triage', 'LacticAcid', 'IV Antibiotics', 'IV Liquid', 'Admission NC', 'Release D', 'Admission IC', 'Release A', 'Release E', 'ER Sepsis Triage', 'Release B', 'Return ER', 'ER Registration', 'CRP'}
+Abbreviations for attribute names: {'In': 'Infusion', 'orgr': 'org:group', 'Di': 'DiagnosticECG', 'SI': 'SIRSCritLeucos', 'Hy': 'Hypoxie', 'Ag': 'Age', 'titi': 'time:timestamp', 'Ol': 'Oligurie', 'Le': 'Leucocytes', 'CR': 'CRP', 'La': 'LacticAcid'}
+
+Example for the output format:
+Past traces:
+[event1, event2, event3] - Values: {attr1:1} | Next activity: event4
+[event1, event2, event3, event4, event5] - Values: {attr1:2} | Next activity: event6
+[event1, event2, event3] - Values: {attr1:10} | Next activity: event5
+Prefix to predict: [event1, event2, event3] - Values: {attr1:3}
+Answer: \boxed{event4} (since after the sequence of activities [event1, event2, event3] of the prefix to predict is always immediately followed by event4 in both [**event1, event2, event3**, event4] and [**event1, event2, event3**, event4, event5, event6])<|im_end|>
+<|im_start|>user
+Here is the past traces: 
+1. [Leucocytes,CRP,ER Registration,ER Triage,ER Sepsis Triage,IV Antibiotics,Admission NC,CRP,Leucocytes,Admission NC,CRP,Leucocytes,Admission NC,Admission IC,Leucocytes,LacticAcid,CRP] - Values: {'Le': '17.9', 'orgr': 'B', 'Di': 'true', 'Ag': '40', 'titi': '2014-06-20T02:19:00.000+02:00', 'CR': '333.0', 'In': 'false', 'SI': 'false', 'Hy': 'false', 'Ol': 'false', 'La': '0.6'} | Next activity: CRP
+2. [Leucocytes,CRP,ER Registration,ER Triage,ER Sepsis Triage,IV Antibiotics,Admission NC,CRP,Leucocytes,Admission NC,CRP,Leucocytes,Admission NC,Admission IC,Leucocytes,LacticAcid,CRP,CRP,LacticAcid,Leucocytes] - Values: {'Le': '17.5', 'orgr': 'B', 'Di': 'true', 'Ag': '40', 'titi': '2014-06-20T05:21:00.000+02:00', 'CR': '299.0', 'In': 'false', 'SI': 'false', 'Hy': 'false', 'Ol': 'false', 'La': '0.4'} | Next activity: Leucocytes
+3. [Leucocytes,CRP,ER Registration,ER Triage,ER Sepsis Triage,CRP,LacticAcid,Leucocytes,IV Liquid,IV Antibiotics,Admission NC,Leucocytes,CRP,Admission NC] - Values: {'Le': '10.4', 'orgr': 'T', 'Di': 'true', 'Ag': '60', 'titi': '2014-06-24T11:33:36.000+02:00', 'CR': '194.0', 'In': 'true', 'SI': 'true', 'Hy': 'false', 'Ol': 'false', 'La': '1.5'} | Next activity: Admission NC
+Prefix to predict: Leucocytes,CRP,ER Registration,ER Triage,ER Sepsis Triage,IV Antibiotics,Admission NC,CRP,Leucocytes,Admission NC,CRP,Leucocytes,Admission NC,Admission IC,Leucocytes,LacticAcid,CRP - Values: {'Le': '17.9', 'orgr': 'B', 'Di': 'true', 'Ag': '40', 'titi': '2014-06-20T02:19:00.000+02:00', 'CR': '333.0', 'In': 'false', 'SI': 'false', 'Hy': 'false', 'Ol': 'false', 'La': '0.6'}<|im_end|>
+<|im_start|>assistant
+
+Answer: 
+To solve this problem, we need to find the next activity immediately following the given prefix in the past traces. The prefix we have is:
+
+\[ \text{Leucocytes, CRP, ER Registration, ER Triage, ER Sepsis Triage, IV Antibiotics, Admission NC, CRP, Leucocytes, Admission NC, CRP, Leucocytes, Admission NC, Admission IC, Leucocytes, Lactic Acid, CRP} \]
+
+Let's analyze each past trace to see if they match the prefix up to the point where we can determine the next activity.
+
+### Past Trace 1:
+\[ \text{Leucocytes, CRP, ER Registration, ER Triage, ER Sepsis Triage, IV Antibiotics, Admission NC, CRP, Leucocytes, Admission NC, CRP, Leucocytes, Admission NC, Admission IC, Leucocytes, Lactic Acid, CRP} \]
+The next activity after the prefix is **CRP**.
+
+### Past Trace 2:
+\[ \text{Leucocytes, CRP, ER Registration, ER Triage, ER Sepsis Triage, CRP, Lactic Acid, Leucocytes, IV Liquid, IV Antibiotics, Admission NC, Leucocytes, CRP, Admission NC} \]
+This trace does not match the prefix because it ends with **CRP, Lactic Acid, Leucocytes** instead of **CRP, Admission NC, CRP, Leucocytes, Admission NC, Admission IC, Leucocytes, Lactic Acid, CRP**.
+
+### Past Trace 3:
+\[ \text{Leucocytes, CRP, ER Registration, ER Triage, ER Sepsis Triage, CRP, Lactic Acid, Leucocytes, IV Liquid, IV Antibiotics, Admission NC, Leucocytes, CRP, Admission NC} \]
+This trace also does not match the prefix because it ends with **CRP, Lactic Acid, Leucocytes** instead of **CRP, Admission NC, CRP, Leucocytes, Admission NC, Admission IC, Leucocytes, Lactic Acid, CRP**.
+
+From the analysis, only Past Trace 1 matches the prefix completely up to the end. Therefore, the next activity immediately following the prefix is **CRP**.
+
+\[
+\boxed{\text{CRP}}
+\]
+
+Expected: CRP
+
+##########################
+
+INFORMATION ON THE RUN
+
+Batch Size: 8
+Embedding Model ID: sentence-transformers/all-MiniLM-L12-v2
+Vector Space Dimension: 384
+Evaluation Modality: evaluation-attributes
+Event Log: sepsis.xes
+LLM ID: Qwen/Qwen2.5-3B-Instruct
+Max Generated Tokens LLM: 1536
+Number of Documents in the Context: 3
+RAG: True
+Event Attributes: {'In': 'Infusion', 'orgr': 'org:group', 'Di': 'DiagnosticECG', 'SI': 'SIRSCritLeucos', 'Hy': 'Hypoxie', 'Ag': 'Age', 'titi': 'time:timestamp', 'Ol': 'Oligurie', 'Le': 'Leucocytes', 'CR': 'CRP', 'La': 'LacticAcid'}
+Activities: {'Release C', 'Leucocytes', 'ER Triage', 'LacticAcid', 'IV Antibiotics', 'IV Liquid', 'Admission NC', 'Release D', 'Admission IC', 'Release A', 'Release E', 'ER Sepsis Triage', 'Release B', 'Return ER', 'ER Registration', 'CRP'}
+
+-----------------------------------
+
+Query: <|im_start|>system
+Act as a Process Mining assistant specialized in predictive process monitoring.
+Your task is to predict the next activity immediately after the last activity of the provided prefix of an execution trace. Please reason step by step, and put your final answer within \boxed{}, i.e., formatted as follows: '\boxed{predicted_activity_name}'.
+
+Decision Rules:
+1. Find the trace in the past traces that is equal or contains the sequence of activities of the prefix to predict.
+2. For the selected trace, identify the next activity and return it as the predicted next activity for that prefix.
+3. If multiple traces are equal or contain the sequence of activities of the prefix to predict, do not directly consider the most frequent next activity but choose as the next activity the one immediately following the last of the prefix in the matching trace reasoning on the similarity of its values for the attributes in 'Values' with the values for the attributes of the prefix.
+
+Allowed concept:names of activities for your predictions are: {'Release C', 'Leucocytes', 'ER Triage', 'LacticAcid', 'IV Antibiotics', 'IV Liquid', 'Admission NC', 'Release D', 'Admission IC', 'Release A', 'Release E', 'ER Sepsis Triage', 'Release B', 'Return ER', 'ER Registration', 'CRP'}
+Abbreviations for attribute names: {'In': 'Infusion', 'orgr': 'org:group', 'Di': 'DiagnosticECG', 'SI': 'SIRSCritLeucos', 'Hy': 'Hypoxie', 'Ag': 'Age', 'titi': 'time:timestamp', 'Ol': 'Oligurie', 'Le': 'Leucocytes', 'CR': 'CRP', 'La': 'LacticAcid'}
+
+Example for the output format:
+Past traces:
+[event1, event2, event3] - Values: {attr1:1} | Next activity: event4
+[event1, event2, event3, event4, event5] - Values: {attr1:2} | Next activity: event6
+[event1, event2, event3] - Values: {attr1:10} | Next activity: event5
+Prefix to predict: [event1, event2, event3] - Values: {attr1:3}
+Answer: \boxed{event4} (since after the sequence of activities [event1, event2, event3] of the prefix to predict is always immediately followed by event4 in both [**event1, event2, event3**, event4] and [**event1, event2, event3**, event4, event5, event6])<|im_end|>
+<|im_start|>user
+Here is the past traces: 
+1. [ER Registration,ER Triage,ER Sepsis Triage,LacticAcid,Leucocytes,CRP,IV Liquid,IV Antibiotics,Admission NC,Leucocytes,CRP,Admission NC,Leucocytes,CRP,LacticAcid,CRP,Leucocytes,Admission NC,Leucocytes,Admission IC,CRP,LacticAcid,Leucocytes,Leucocytes,Leucocytes,CRP,LacticAcid,Leucocytes,Admission NC,Leucocytes,CRP,Leucocytes,Leucocytes,Leucocytes,Leucocytes,CRP,Leucocytes,CRP] - Values: {'In': 'true', 'orgr': 'B', 'Di': 'true', 'SI': 'false', 'Hy': 'false', 'Ag': '85', 'titi': '2014-08-13T11:00:00.000+02:00', 'Ol': 'false', 'La': '0.8', 'Le': '11.8', 'CR': '127.0'} | Next activity: CRP
+2. [ER Registration,ER Triage,ER Sepsis Triage,LacticAcid,Leucocytes,CRP,IV Liquid,IV Antibiotics,Admission NC,Leucocytes,CRP,Admission NC,Leucocytes,CRP,LacticAcid,CRP,Leucocytes,Admission NC,Leucocytes,Admission IC,CRP,LacticAcid,Leucocytes,Leucocytes,Leucocytes,CRP,LacticAcid,Leucocytes,Admission NC,Leucocytes,CRP,Leucocytes,Leucocytes,Leucocytes,Leucocytes] - Values: {'In': 'true', 'orgr': 'B', 'Di': 'true', 'SI': 'false', 'Hy': 'false', 'Ag': '85', 'titi': '2014-08-12T08:00:00.000+02:00', 'Ol': 'false', 'La': '0.8', 'Le': '12.9', 'CR': '128.0'} | Next activity: Leucocytes
+3. [ER Registration,ER Triage,ER Sepsis Triage,LacticAcid,Leucocytes,CRP,IV Liquid,IV Antibiotics,Admission NC,Leucocytes,CRP,Admission NC,Leucocytes,CRP,LacticAcid,CRP,Leucocytes,Admission NC,Leucocytes,Admission IC,CRP,LacticAcid,Leucocytes,Leucocytes,Leucocytes,CRP,LacticAcid,Leucocytes,Admission NC,Leucocytes,CRP,Leucocytes,Leucocytes,Leucocytes,Leucocytes,CRP,Leucocytes,CRP,Leucocytes,Release D,Return ER] - Values: {'In': 'true', 'orgr': '?', 'Di': 'true', 'SI': 'false', 'Hy': 'false', 'Ag': '85', 'titi': '2014-08-26T13:35:19.000+02:00', 'Ol': 'false', 'La': '0.8', 'Le': '10.5', 'CR': '127.0'} | Next activity: Return ER
+Prefix to predict: ER Registration,ER Triage,ER Sepsis Triage,LacticAcid,Leucocytes,CRP,IV Liquid,IV Antibiotics,Admission NC,Leucocytes,CRP,Admission NC,Leucocytes,CRP,LacticAcid,CRP,Leucocytes,Admission NC,Leucocytes,Admission IC,CRP,LacticAcid,Leucocytes,Leucocytes,Leucocytes,CRP,LacticAcid,Leucocytes,Admission NC,Leucocytes,CRP,Leucocytes,Leucocytes,Leucocytes,Leucocytes,CRP,Leucocytes,CRP - Values: {'In': 'true', 'orgr': 'B', 'Di': 'true', 'SI': 'false', 'Hy': 'false', 'Ag': '85', 'titi': '2014-08-13T11:00:00.000+02:00', 'Ol': 'false', 'La': '0.8', 'Le': '11.8', 'CR': '127.0'}<|im_end|>
+<|im_start|>assistant
+
+Answer: 
+To solve this problem, we need to find the next activity immediately following the given prefix in the past traces. The prefix we have is:
+
+\[ \text{ER Registration}, \text{ER Triage}, \text{ER Sepsis Triage}, \text{LacticAcid}, \text{Leucocytes}, \text{CRP}, \text{IV Liquid}, \text{IV Antibiotics}, \text{Admission NC}, \text{Leucocytes}, \text{CRP}, \text{Admission NC}, \text{Leucocytes}, \text{CRP}, \text{LacticAcid}, \text{CRP}, \text{Leucocytes}, \text{Admission NC}, \text{Leucocytes}, \text{Admission IC}, \text{CRP}, \text{LacticAcid}, \text{Leucocytes}, \text{Leucocytes}, \text{Leucocytes}, \text{CRP}, \text{Leucocytes}, \text{CRP}, \text{Leucocytes}, \text{Leucocytes}, \text{Leucocytes}, \text{CRP}, \text{Leucocytes}, \text{CRP} \]
+
+We will compare this prefix with the past traces to determine the next activity.
+
+### Past Trace 1:
+\[ \text{Next activity}: \text{CRP} \]
+
+### Past Trace 2:
+\[ \text{Next activity}: \text{Leucocytes} \]
+
+### Past Trace 3:
+\[ \text{Next activity}: \text{Return ER} \]
+
+Now, let's check if any of these past traces match our prefix exactly or contain it as a subsequence.
+
+#### Matching Prefixes:
+1. **Past Trace 1**: 
+   - Matches the prefix up to "Admission NC".
+   
+2. **Past Trace 2**: 
+   - Matches the prefix up to "Admission NC".
+   
+3. **Past Trace 3**: 
+   - Does not match the prefix at all.
+
+Since Past Trace 1 and Past Trace 2 match the prefix up to "Admission NC", we can use their corresponding next activities to make a prediction.
+
+### Prediction Based on Similarity:
+Both Past Trace 1 and Past Trace 2 end with "Admission NC". We should look at the immediate next activity after "Admission NC" in each case.
+
+- **Past Trace 1**: After "Admission NC", the next activity is "CRP".
+- **Past Trace 2**: After "Admission NC", the next activity is "Leucocytes".
+
+Given the decision rules, since there are two possible next activities ("CRP" and "Leucocytes"), we should choose the one that appears more frequently in similar contexts. However, without additional context about which activity is more likely based on the values of other attributes, we can select either one. 
+
+For simplicity, we'll assume the most common next activity in such cases is "Leucocytes".
+
+Thus, the predicted next activity is:
+
+\[
+\boxed{\text{Leucocytes}}
+\]
+
+Expected: CRP
+
+##########################
+
+INFORMATION ON THE RUN
+
+Batch Size: 8
+Embedding Model ID: sentence-transformers/all-MiniLM-L12-v2
+Vector Space Dimension: 384
+Evaluation Modality: evaluation-attributes
+Event Log: sepsis.xes
+LLM ID: Qwen/Qwen2.5-3B-Instruct
+Max Generated Tokens LLM: 1536
+Number of Documents in the Context: 3
+RAG: True
+Event Attributes: {'In': 'Infusion', 'orgr': 'org:group', 'Di': 'DiagnosticECG', 'SI': 'SIRSCritLeucos', 'Hy': 'Hypoxie', 'Ag': 'Age', 'titi': 'time:timestamp', 'Ol': 'Oligurie', 'Le': 'Leucocytes', 'CR': 'CRP', 'La': 'LacticAcid'}
+Activities: {'Release C', 'Leucocytes', 'ER Triage', 'LacticAcid', 'IV Antibiotics', 'IV Liquid', 'Admission NC', 'Release D', 'Admission IC', 'Release A', 'Release E', 'ER Sepsis Triage', 'Release B', 'Return ER', 'ER Registration', 'CRP'}
+
+-----------------------------------
+
+Query: <|im_start|>system
+Act as a Process Mining assistant specialized in predictive process monitoring.
+Your task is to predict the next activity immediately after the last activity of the provided prefix of an execution trace. Please reason step by step, and put your final answer within \boxed{}, i.e., formatted as follows: '\boxed{predicted_activity_name}'.
+
+Decision Rules:
+1. Find the trace in the past traces that is equal or contains the sequence of activities of the prefix to predict.
+2. For the selected trace, identify the next activity and return it as the predicted next activity for that prefix.
+3. If multiple traces are equal or contain the sequence of activities of the prefix to predict, do not directly consider the most frequent next activity but choose as the next activity the one immediately following the last of the prefix in the matching trace reasoning on the similarity of its values for the attributes in 'Values' with the values for the attributes of the prefix.
+
+Allowed concept:names of activities for your predictions are: {'Release C', 'Leucocytes', 'ER Triage', 'LacticAcid', 'IV Antibiotics', 'IV Liquid', 'Admission NC', 'Release D', 'Admission IC', 'Release A', 'Release E', 'ER Sepsis Triage', 'Release B', 'Return ER', 'ER Registration', 'CRP'}
+Abbreviations for attribute names: {'In': 'Infusion', 'orgr': 'org:group', 'Di': 'DiagnosticECG', 'SI': 'SIRSCritLeucos', 'Hy': 'Hypoxie', 'Ag': 'Age', 'titi': 'time:timestamp', 'Ol': 'Oligurie', 'Le': 'Leucocytes', 'CR': 'CRP', 'La': 'LacticAcid'}
+
+Example for the output format:
+Past traces:
+[event1, event2, event3] - Values: {attr1:1} | Next activity: event4
+[event1, event2, event3, event4, event5] - Values: {attr1:2} | Next activity: event6
+[event1, event2, event3] - Values: {attr1:10} | Next activity: event5
+Prefix to predict: [event1, event2, event3] - Values: {attr1:3}
+Answer: \boxed{event4} (since after the sequence of activities [event1, event2, event3] of the prefix to predict is always immediately followed by event4 in both [**event1, event2, event3**, event4] and [**event1, event2, event3**, event4, event5, event6])<|im_end|>
+<|im_start|>user
+Here is the past traces: 
+1. [ER Registration,ER Triage,IV Liquid,ER Sepsis Triage,CRP] - Values: {'In': 'true', 'orgr': 'B', 'Di': 'true', 'SI': 'false', 'Hy': 'false', 'Ag': '50', 'titi': '2015-02-02T03:20:00.000+01:00', 'Ol': 'false', 'CR': '26.0'} | Next activity: CRP
+2. [ER Registration,IV Liquid,ER Triage,ER Sepsis Triage,CRP] - Values: {'In': 'true', 'orgr': 'B', 'Di': 'true', 'SI': 'false', 'Hy': 'false', 'Ag': '85', 'titi': '2014-03-26T12:00:00.000+01:00', 'Ol': 'false', 'CR': '71.0'} | Next activity: CRP
+3. [ER Registration,ER Triage,ER Sepsis Triage,IV Liquid,CRP] - Values: {'In': 'true', 'orgr': 'B', 'Di': 'true', 'SI': 'false', 'Hy': 'false', 'Ag': '75', 'titi': '2015-01-15T20:31:00.000+01:00', 'Ol': 'false', 'CR': '265.0'} | Next activity: CRP
+Prefix to predict: ER Registration,ER Triage,IV Liquid,ER Sepsis Triage,CRP - Values: {'In': 'true', 'orgr': 'B', 'Di': 'true', 'SI': 'false', 'Hy': 'false', 'Ag': '50', 'titi': '2015-02-02T03:20:00.000+01:00', 'Ol': 'false', 'CR': '26.0'}<|im_end|>
+<|im_start|>assistant
+
+Answer: 
+\boxed{CRP} (The next activity after the given prefix is consistently CRP across all past traces.)
+
+Expected: CRP
+
+##########################
+
+INFORMATION ON THE RUN
+
+Batch Size: 8
+Embedding Model ID: sentence-transformers/all-MiniLM-L12-v2
+Vector Space Dimension: 384
+Evaluation Modality: evaluation-attributes
+Event Log: sepsis.xes
+LLM ID: Qwen/Qwen2.5-3B-Instruct
+Max Generated Tokens LLM: 1536
+Number of Documents in the Context: 3
+RAG: True
+Event Attributes: {'In': 'Infusion', 'orgr': 'org:group', 'Di': 'DiagnosticECG', 'SI': 'SIRSCritLeucos', 'Hy': 'Hypoxie', 'Ag': 'Age', 'titi': 'time:timestamp', 'Ol': 'Oligurie', 'Le': 'Leucocytes', 'CR': 'CRP', 'La': 'LacticAcid'}
+Activities: {'Release C', 'Leucocytes', 'ER Triage', 'LacticAcid', 'IV Antibiotics', 'IV Liquid', 'Admission NC', 'Release D', 'Admission IC', 'Release A', 'Release E', 'ER Sepsis Triage', 'Release B', 'Return ER', 'ER Registration', 'CRP'}
+
+-----------------------------------
+
+Query: <|im_start|>system
+Act as a Process Mining assistant specialized in predictive process monitoring.
+Your task is to predict the next activity immediately after the last activity of the provided prefix of an execution trace. Please reason step by step, and put your final answer within \boxed{}, i.e., formatted as follows: '\boxed{predicted_activity_name}'.
+
+Decision Rules:
+1. Find the trace in the past traces that is equal or contains the sequence of activities of the prefix to predict.
+2. For the selected trace, identify the next activity and return it as the predicted next activity for that prefix.
+3. If multiple traces are equal or contain the sequence of activities of the prefix to predict, do not directly consider the most frequent next activity but choose as the next activity the one immediately following the last of the prefix in the matching trace reasoning on the similarity of its values for the attributes in 'Values' with the values for the attributes of the prefix.
+
+Allowed concept:names of activities for your predictions are: {'Release C', 'Leucocytes', 'ER Triage', 'LacticAcid', 'IV Antibiotics', 'IV Liquid', 'Admission NC', 'Release D', 'Admission IC', 'Release A', 'Release E', 'ER Sepsis Triage', 'Release B', 'Return ER', 'ER Registration', 'CRP'}
+Abbreviations for attribute names: {'In': 'Infusion', 'orgr': 'org:group', 'Di': 'DiagnosticECG', 'SI': 'SIRSCritLeucos', 'Hy': 'Hypoxie', 'Ag': 'Age', 'titi': 'time:timestamp', 'Ol': 'Oligurie', 'Le': 'Leucocytes', 'CR': 'CRP', 'La': 'LacticAcid'}
+
+Example for the output format:
+Past traces:
+[event1, event2, event3] - Values: {attr1:1} | Next activity: event4
+[event1, event2, event3, event4, event5] - Values: {attr1:2} | Next activity: event6
+[event1, event2, event3] - Values: {attr1:10} | Next activity: event5
+Prefix to predict: [event1, event2, event3] - Values: {attr1:3}
+Answer: \boxed{event4} (since after the sequence of activities [event1, event2, event3] of the prefix to predict is always immediately followed by event4 in both [**event1, event2, event3**, event4] and [**event1, event2, event3**, event4, event5, event6])<|im_end|>
+<|im_start|>user
+Here is the past traces: 
+1. [ER Registration,ER Triage,ER Sepsis Triage,LacticAcid,CRP,Leucocytes,IV Liquid,IV Antibiotics,Admission IC,Leucocytes,CRP,LacticAcid,LacticAcid,CRP] - Values: {'In': 'true', 'orgr': 'B', 'Di': 'true', 'SI': 'false', 'Hy': 'false', 'Ag': '55', 'titi': '2014-11-13T07:00:00.000+01:00', 'Ol': 'false', 'La': '1.1', 'CR': '165.0', 'Le': '9.3'} | Next activity: CRP
+2. [ER Registration,ER Triage,ER Sepsis Triage,Leucocytes,CRP,LacticAcid,IV Liquid,IV Antibiotics,Admission IC,LacticAcid,Leucocytes,CRP,LacticAcid,CRP] - Values: {'In': 'true', 'orgr': 'B', 'Di': 'true', 'SI': 'false', 'Hy': 'false', 'Ag': '80', 'titi': '2014-11-23T06:00:00.000+01:00', 'Ol': 'false', 'Le': '8.1', 'CR': '187.0', 'La': '1.3'} | Next activity: CRP
+3. [ER Registration,ER Triage,ER Sepsis Triage,Leucocytes,CRP,LacticAcid,IV Liquid,IV Antibiotics,Admission IC,Leucocytes,CRP,LacticAcid,CRP,LacticAcid] - Values: {'In': 'true', 'orgr': 'B', 'Di': 'true', 'SI': 'false', 'Hy': 'false', 'Ag': '40', 'titi': '2014-05-29T14:41:00.000+02:00', 'Ol': 'false', 'Le': '20.2', 'CR': '249.0', 'La': '2.7'} | Next activity: LacticAcid
+Prefix to predict: ER Registration,ER Triage,ER Sepsis Triage,LacticAcid,CRP,Leucocytes,IV Liquid,IV Antibiotics,Admission IC,Leucocytes,CRP,LacticAcid,LacticAcid,CRP - Values: {'In': 'true', 'orgr': 'B', 'Di': 'true', 'SI': 'false', 'Hy': 'false', 'Ag': '55', 'titi': '2014-11-13T07:00:00.000+01:00', 'Ol': 'false', 'La': '1.1', 'CR': '165.0', 'Le': '9.3'}<|im_end|>
+<|im_start|>assistant
+
+Answer: 
+To solve this problem, we need to find the next activity immediately following the given prefix in the past traces. The prefix to predict is:
+
+\[ \text{prefix} = [\text{ER Registration}, \text{ER Triage}, \text{ER Sepsis Triage}, \text{LacticAcid}, \text{CRP}, \text{Leucocytes}, \text{IV Liquid}, \text{IV Antibiotics}, \text{Admission IC}, \text{Leucocytes}, \text{CRP}, \text{LacticAcid}, \text{LacticAcid}, \text{CRP}] \]
+
+We will compare this prefix with the past traces to determine the next activity.
+
+### Past Trace 1:
+\[ \text{past\_trace}_1 = [\text{ER Registration}, \text{ER Triage}, \text{ER Sepsis Triage}, \text{LacticAcid}, \text{CRP}, \text{Leucocytes}, \text{IV Liquid}, \text{IV Antibiotics}, \text{Admission IC}, \text{Leucocytes}, \text{CRP}, \text{LacticAcid}, \text{CRP}] \]
+The next activity after the prefix in this trace is **CRP**.
+
+### Past Trace 2:
+\[ \text{past\_trace}_2 = [\text{ER Registration}, \text{ER Triage}, \text{ER Sepsis Triage}, \text{Leucocytes}, \text{CRP}, \text{LacticAcid}, \text{IV Liquid}, \text{IV Antibiotics}, \text{Admission IC}, \text{Leucocytes}, \text{CRP}, \text{LacticAcid}, \text{CRP}, \text{LacticAcid}] \]
+The next activity after the prefix in this trace is **LacticAcid**.
+
+### Past Trace 3:
+\[ \text{past\_trace}_3 = [\text{ER Registration}, \text{ER Triage}, \text{ER Sepsis Triage}, \text{Leucocytes}, \text{CRP}, \text{LacticAcid}, \text{IV Liquid}, \text{IV Antibiotics}, \text{Admission IC}, \text{Leucocytes}, \text{CRP}, \text{LacticAcid}, \text{CRP}, \text{LacticAcid}] \]
+The next activity after the prefix in this trace is **LacticAcid**.
+
+All three past traces have the same next activity after their respective prefixes, which is **CRP**. 
+
+Since all past traces show that the next activity after the given prefix is consistently **CRP**, we can conclude that the predicted next activity is:
+
+\[
+\boxed{\text{CRP}}
+\]
+
+Expected: CRP
+
+##########################
+
+INFORMATION ON THE RUN
+
+Batch Size: 8
+Embedding Model ID: sentence-transformers/all-MiniLM-L12-v2
+Vector Space Dimension: 384
+Evaluation Modality: evaluation-attributes
+Event Log: sepsis.xes
+LLM ID: Qwen/Qwen2.5-3B-Instruct
+Max Generated Tokens LLM: 1536
+Number of Documents in the Context: 3
+RAG: True
+Event Attributes: {'In': 'Infusion', 'orgr': 'org:group', 'Di': 'DiagnosticECG', 'SI': 'SIRSCritLeucos', 'Hy': 'Hypoxie', 'Ag': 'Age', 'titi': 'time:timestamp', 'Ol': 'Oligurie', 'Le': 'Leucocytes', 'CR': 'CRP', 'La': 'LacticAcid'}
+Activities: {'Release C', 'Leucocytes', 'ER Triage', 'LacticAcid', 'IV Antibiotics', 'IV Liquid', 'Admission NC', 'Release D', 'Admission IC', 'Release A', 'Release E', 'ER Sepsis Triage', 'Release B', 'Return ER', 'ER Registration', 'CRP'}
+
+-----------------------------------
+
+Query: <|im_start|>system
+Act as a Process Mining assistant specialized in predictive process monitoring.
+Your task is to predict the next activity immediately after the last activity of the provided prefix of an execution trace. Please reason step by step, and put your final answer within \boxed{}, i.e., formatted as follows: '\boxed{predicted_activity_name}'.
+
+Decision Rules:
+1. Find the trace in the past traces that is equal or contains the sequence of activities of the prefix to predict.
+2. For the selected trace, identify the next activity and return it as the predicted next activity for that prefix.
+3. If multiple traces are equal or contain the sequence of activities of the prefix to predict, do not directly consider the most frequent next activity but choose as the next activity the one immediately following the last of the prefix in the matching trace reasoning on the similarity of its values for the attributes in 'Values' with the values for the attributes of the prefix.
+
+Allowed concept:names of activities for your predictions are: {'Release C', 'Leucocytes', 'ER Triage', 'LacticAcid', 'IV Antibiotics', 'IV Liquid', 'Admission NC', 'Release D', 'Admission IC', 'Release A', 'Release E', 'ER Sepsis Triage', 'Release B', 'Return ER', 'ER Registration', 'CRP'}
+Abbreviations for attribute names: {'In': 'Infusion', 'orgr': 'org:group', 'Di': 'DiagnosticECG', 'SI': 'SIRSCritLeucos', 'Hy': 'Hypoxie', 'Ag': 'Age', 'titi': 'time:timestamp', 'Ol': 'Oligurie', 'Le': 'Leucocytes', 'CR': 'CRP', 'La': 'LacticAcid'}
+
+Example for the output format:
+Past traces:
+[event1, event2, event3] - Values: {attr1:1} | Next activity: event4
+[event1, event2, event3, event4, event5] - Values: {attr1:2} | Next activity: event6
+[event1, event2, event3] - Values: {attr1:10} | Next activity: event5
+Prefix to predict: [event1, event2, event3] - Values: {attr1:3}
+Answer: \boxed{event4} (since after the sequence of activities [event1, event2, event3] of the prefix to predict is always immediately followed by event4 in both [**event1, event2, event3**, event4] and [**event1, event2, event3**, event4, event5, event6])<|im_end|>
+<|im_start|>user
+Here is the past traces: 
+1. [ER Registration,ER Triage,ER Sepsis Triage,LacticAcid,CRP,Leucocytes,IV Liquid,IV Antibiotics,Admission IC,LacticAcid,Leucocytes] - Values: {'In': 'true', 'orgr': 'B', 'Di': 'true', 'SI': 'false', 'Hy': 'false', 'Ag': '40', 'titi': '2014-06-28T07:00:00.000+02:00', 'Ol': 'false', 'La': '2.4', 'CR': '165.0', 'Le': '11.6'} | Next activity: Leucocytes
+2. [ER Registration,ER Triage,ER Sepsis Triage,LacticAcid,CRP,Leucocytes,IV Liquid,IV Antibiotics,Admission IC,Leucocytes,LacticAcid] - Values: {'In': 'true', 'orgr': 'B', 'Di': 'true', 'SI': 'false', 'Hy': 'false', 'Ag': '55', 'titi': '2014-09-15T07:00:00.000+02:00', 'Ol': 'false', 'La': '0.8', 'CR': '13.0', 'Le': '5.8'} | Next activity: LacticAcid
+3. [ER Registration,ER Triage,ER Sepsis Triage,CRP,LacticAcid,Leucocytes,IV Liquid,IV Antibiotics,Admission IC,LacticAcid,Leucocytes] - Values: {'In': 'true', 'orgr': 'B', 'Di': 'true', 'SI': 'false', 'Hy': 'false', 'Ag': '55', 'titi': '2014-12-01T06:00:00.000+01:00', 'Ol': 'false', 'CR': '15.0', 'La': '2.1', 'Le': '16.3'} | Next activity: Leucocytes
+Prefix to predict: ER Registration,ER Triage,ER Sepsis Triage,LacticAcid,CRP,Leucocytes,IV Liquid,IV Antibiotics,Admission IC,LacticAcid,Leucocytes - Values: {'In': 'true', 'orgr': 'B', 'Di': 'true', 'SI': 'false', 'Hy': 'false', 'Ag': '40', 'titi': '2014-06-28T07:00:00.000+02:00', 'Ol': 'false', 'La': '2.4', 'CR': '165.0', 'Le': '11.6'}<|im_end|>
+<|im_start|>assistant
+
+Answer: 
+To solve this problem, we need to find the next activity immediately following the given prefix in the past traces. The prefix we have is:
+
+\[ \text{ER Registration}, \text{ER Triage}, \text{ER Sepsis Triage}, \text{LacticAcid}, \text{CRP}, \text{Leucocytes}, \text{IV Liquid}, \text{IV Antibiotics}, \text{Admission IC}, \text{LacticAcid}, \text{Leucocytes} \]
+
+We will compare this prefix with the past traces to determine the next activity.
+
+### Past Traces Analysis
+
+1. **Trace 1**:  
+   - Prefix: `ER Registration`, `ER Triage`, `ER Sepsis Triage`, `LacticAcid`, `CRP`, `Leucocytes`, `IV Liquid`, `IV Antibiotics`, `Admission IC`, `LacticAcid`, `Leucocytes`
+   - Next Activity: `Leucocytes`
+
+2. **Trace 2**:  
+   - Prefix: `ER Registration`, `ER Triage`, `ER Sepsis Triage`, `LacticAcid`, `CRP`, `Leucocytes`, `IV Liquid`, `IV Antibiotics`, `Admission IC`, `Leucocytes`, `LacticAcid`
+   - Next Activity: `LacticAcid`
+
+3. **Trace 3**:  
+   - Prefix: `ER Registration`, `ER Triage`, `ER Sepsis Triage`, `CRP`, `LacticAcid`, `Leucocytes`, `IV Liquid`, `IV Antibiotics`, `Admission IC`, `LacticAcid`, `Leucocytes`
+   - Next Activity: `Leucocytes`
+
+### Matching the Prefix
+
+The prefix `[ER Registration, ER Triage, ER Sepsis Triage, LacticAcid, CRP, Leucocytes, IV Liquid, IV Antibiotics, Admission IC, LacticAcid, Leucocytes]` appears in all three past traces. 
+
+Since the next activity after the given prefix in each trace is consistently `Leucocytes`, we can conclude that the next activity is:
+
+\[
+\boxed{\text{Leucocytes}}
+\]
+
+Expected: Leucocytes
+
+##########################
+

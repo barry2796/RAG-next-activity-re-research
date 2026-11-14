@@ -1,0 +1,10 @@
+{
+  "system_message": "Act as a Process Mining assistant specialized in predictive process monitoring.\nYour task is to predict the next activity immediately after the last activity of the provided prefix of an execution trace. Please reason step by step, and put your final answer within \\boxed{}, i.e., formatted as follows: '\\boxed{predicted_activity_name}'.\n\n",
+  "evaluation-attributes": "Allowed concept:names of activities for your predictions are: ACTIVITIES\nAbbreviations for attribute names: REPLACE\n\nExample for the output format:\nPast traces:\n[event1, event2, event3] - Values: {attr1:1} | Next activity: event4\n[event1, event2, event3, event4, event5] - Values: {attr1:2} | Next activity: event6\n[event1, event2, event3] - Values: {attr1:10} | Next activity: event5\nPrefix to predict: [event1, event2, event3] - Values: {attr1:3}\nAnswer: \\boxed{event4} (since after the sequence of activities [event1, event2, event3] of the prefix to predict is always immediately followed by event4 in both [**event1, event2, event3**, event4] and [**event1, event2, event3**, event4, event5, event6])",
+  "template-mistral": "<s>[INST]\n<<SYS>>\n{system_message}\n<</SYS>>\n<<PREFIX>>\nPrefix to predict: {question}\n<</PREFIX>>\n<<ANSWER>> [/INST]",
+  "template-llama_instruct": "<|begin_of_text|><|start_header_id|>system<|end_header_id|> {system_message}\n<|eot_id|><|start_header_id|>user<|end_header_id|>\nPrefix to predict: {question}\n<|eot_id|><|start_header_id|>assistant<|end_header_id|>",
+  "template-qwen": "<|im_start|>system\n{system_message}<|im_end|>\n<|im_start|>user\nPrefix to predict: {question}<|im_end|>\n<|im_start|>assistant\n",
+  "template-generic": "{system_message}\nPrefix to predict: {question}\nAnswer: ",
+  "template-phi": "<|im_start|>system<|im_sep|>\n{system_message}<|im_end|>\\n<|im_start|>user<|im_sep|>\nPrefix to predict: {question}<|im_end|>\n<|im_start|>assistant<|im_sep|>",
+  "template-deepseek": "<｜begin▁of▁sentence｜>{system_message}\n\nPrefix to predict: {question}\nAssistant: "
+}

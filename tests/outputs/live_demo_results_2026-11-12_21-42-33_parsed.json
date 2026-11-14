@@ -1,0 +1,32 @@
+[
+  {
+    "index": 1,
+    "expected": "CRP",
+    "predicted": "\\text{CRP",
+    "correct": true
+  },
+  {
+    "index": 2,
+    "expected": "CRP",
+    "predicted": "\\text{Leucocytes",
+    "correct": false
+  },
+  {
+    "index": 3,
+    "expected": "CRP",
+    "predicted": "CRP",
+    "correct": true
+  },
+  {
+    "index": 4,
+    "expected": "CRP",
+    "predicted": "\\text{CRP",
+    "correct": true
+  },
+  {
+    "index": 5,
+    "expected": "Leucocytes",
+    "predicted": "\\text{Leucocytes",
+    "correct": true
+  }
+]
