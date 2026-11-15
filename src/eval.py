@@ -104,6 +104,8 @@ def parse_arguments():
                         help='Evaluation modality to use (e.g., evaluation-concept_names, evaluation-attributes)')
     parser.add_argument('--rag', type=u.str2bool,
                         help='Support for Retrieval-Augmented Generation', default=True)
+    parser.add_argument('--do_sample', type=u.str2bool, default=True,
+                        help='Sampling (True, temperature 0.1, original behaviour) or greedy decoding (False). Local models only')
     parser.add_argument('--earlyness_buckets', type=str, 
                         default='5,10,20,30',
                         help='Comma-separated boundaries for earlyness buckets (e.g., "5,10,20,30" creates buckets: 1-5, 6-10, 11-20, 21-30, 31+)')
@@ -133,7 +135,7 @@ def main():
     if args.rebuild_db_and_tests:
         content = lp.read_event_log(args.log)
         traces = lp.extract_traces(content)
-        prefixes = lp.build_prefixes(traces)
+        prefixes = lp.build_prefixes(traces, args.prefix_base, args.prefix_gap)
         prefixes, event_attributes, activities_set = lp.process_prefixes(prefixes, args.log)
         traces_to_store_size = len(prefixes)
         vs.store_traces(prefixes, q_client, args.log, embed_model, COLLECTION_NAME)
@@ -145,7 +147,7 @@ def main():
     max_new_tokens = args.max_new_tokens
     os.environ['HF_TOKEN'] = HF_AUTH if HF_AUTH else ""
     os.environ['OPENAI_API_KEY'] = OPENAI_API_KEY if OPENAI_API_KEY else ""
-    pipeline_instance = p.RAGPipeline(model_id, max_new_tokens, rag)
+    pipeline_instance = p.RAGPipeline(model_id, max_new_tokens, rag, do_sample=args.do_sample)
     run_data = {
         'Batch Size': args.batch_size,
         'Embedding Model ID': embed_model_id,
@@ -162,7 +164,8 @@ def main():
         'Prefix Base': args.prefix_base,
         'Prefix Gap': args.prefix_gap,
         'Rebuilt Vector Index and Test Set': args.rebuild_db_and_tests,
-        'RAG': rag
+        'RAG': rag,
+        'Do Sample': args.do_sample
     }
     earlyness_boundaries = [int(x.strip()) for x in args.earlyness_buckets.split(',')]
     run_data['Earlyness Boundaries'] = earlyness_boundaries

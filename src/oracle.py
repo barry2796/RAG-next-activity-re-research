@@ -202,7 +202,7 @@ class VerificationOracle:
                                  f"{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt")
         self.compute_stats()
 
-        with open(file_path, 'w') as file:
+        with open(file_path, 'w', encoding='utf-8') as file:
             file.write('INFORMATION ON THE RUN\n\n')
             for key in self.run_info.keys():
                 file.write(f"{key}: {self.run_info[key]}\n")

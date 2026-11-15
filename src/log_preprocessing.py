@@ -53,7 +53,8 @@ def process_prefixes(traces, log_name=None):
         trace = traces[i]
         events = re.findall(r"<event>.*?</event>", trace, re.DOTALL)
         cl_list = []
-        for event in events:
+        cl_event_idx = []  # index in events of the event behind each entry of cl_list
+        for event_idx, event in enumerate(events):
             concept_name_match = concept_name_pattern.search(event)
             lifecycle_transition_match = lifecycle_transition_pattern.search(event)
             
@@ -75,27 +76,32 @@ def process_prefixes(traces, log_name=None):
                         event_identifier += f"+{role_match.group(1)}"
                     
                     cl_list.append(event_identifier)
+                    cl_event_idx.append(event_idx)
                     activities.add(event_identifier)
                 else:
                     if lifecycle_transition_match:
                         if lifecycle_transition_match.group(1).lower() == "complete":
                             event_name = concept_name_match.group(1)
                             cl_list.append(event_name)
+                            cl_event_idx.append(event_idx)
                             activities.add(event_name)
                     elif not lifecycle_transition_match:
                         event_name = concept_name_match.group(1)
                         cl_list.append(event_name)
+                        cl_event_idx.append(event_idx)
                         activities.add(event_name)
-        if not cl_list:
+        # The last activity is the target: the prefix is everything before it, so it must not be part of the
+        # prefix nor contribute its attribute values
+        if len(cl_list) < 2:
             continue
-        cl_list_string = ','.join(cl_list)
+        last_evt = cl_list[-1]
+        cl_list_string = ','.join(cl_list[:-1])
         if cl_list_string in seen_prefixes:
             continue
         else:
             seen_prefixes.append(cl_list_string)
-        last_evt = cl_list[-1]
         attr_vals = {}
-        for evt in events:
+        for evt in events[:cl_event_idx[-2] + 1]:
             for attribute_match in attribute_pattern.findall(evt):
                 key, value = attribute_match
                 if key != "lifecycle:transition" and key != "concept:name":

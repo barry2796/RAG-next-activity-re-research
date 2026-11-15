@@ -59,13 +59,14 @@ class RAGPipeline:
         'deepseek': 'Assistant: '
     }
 
-    def __init__(self, model_id: str, max_new_tokens: int, use_rag: bool = True) -> None:
+    def __init__(self, model_id: str, max_new_tokens: int, use_rag: bool = True, do_sample: bool = True) -> None:
         self.model_id = model_id
         self.model_family, self.model_type = self._get_model_family_type()
         if not self.model_family:
             raise ValueError(f"Could not determine model family for ID: {self.model_id}. Please check MODELS definition.")
         self.max_new_tokens = max_new_tokens
         self.use_rag = use_rag
+        self.do_sample = do_sample
         self.llm = self._initialize_model()
         self.prompt_template = self._generate_prompt_template()
         self.chain = self.prompt_template | self.llm
@@ -82,7 +83,7 @@ class RAGPipeline:
 
     def _initialize_model(self):
         if self.model_type == 'local':
-            HF_AUTH = os.getenv('HF_TOKEN')
+            HF_AUTH = os.getenv('HF_TOKEN') or None
             bnb_config = BitsAndBytesConfig(
                 load_in_4bit=True,
                 bnb_4bit_quant_type='nf4',
@@ -115,11 +116,13 @@ class RAGPipeline:
                 "tokenizer": tokenizer,
                 "return_full_text": True,
                 "task": "text-generation",
-                "do_sample": True,
-                "temperature": 0.1,
+                "do_sample": self.do_sample,
                 "max_new_tokens": self.max_new_tokens,
                 "repetition_penalty": 1.1
             }
+            if self.do_sample:
+                pipeline_params["temperature"] = 0.1  # original author setting
+            # do_sample=False -> greedy decoding; temperature is ignored by HF, so it is not passed
 
             model_family_key = self.model_family.lower()
             if model_family_key in self.TERMINATOR_TOKENS:
