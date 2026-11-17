@@ -1,0 +1,490 @@
+% =====================================================================
+%  Báo cáo nghiên cứu cuối kỳ — Cơ sở các hệ thống thông tin
+%  "Enhancing Next Activity Prediction in Process Mining with
+%   Retrieval-Augmented Generation" (Casciani et al., 2026)
+%
+%  Biên dịch:  lualatex Report.tex  (chạy 2–3 lần để cập nhật mục lục)
+%  Cấu trúc:   Report.tex (khung, phần đầu, tài liệu tham khảo, phụ lục)
+%              chapters/ch1..ch8 (nội dung các chương)
+%  Bản trước khi tái cấu trúc: archive/Report_v1_2026-11-15.tex
+% =====================================================================
+\documentclass[a4paper,12pt,oneside]{report}
+
+% ---------------------------------------------------------------- Fonts
+\usepackage{fontspec}
+\usepackage{unicode-math}
+\setmainfont{Times New Roman}
+\setmathfont{TeX Gyre Termes Math}
+\setmonofont{Consolas}[Scale=0.86]
+
+% ---------------------------------------------------------------- Layout
+\usepackage[a4paper,left=3cm,right=2cm,top=2.5cm,bottom=2.5cm,
+            headheight=15pt,headsep=0.8cm,footskip=1.1cm]{geometry}
+\usepackage{setspace}
+\setstretch{1.35}
+\setlength{\parindent}{1cm}
+\setlength{\parskip}{3pt plus 1pt}
+\widowpenalty=10000
+\clubpenalty=10000
+\setlength{\emergencystretch}{3em}
+\raggedbottom
+\usepackage{microtype}
+\usepackage{indentfirst}
+\usepackage{etoolbox}
+\AtBeginEnvironment{verbatim}{\setstretch{1.0}}
+\AtBeginEnvironment{tabular}{\setstretch{1.0}}
+\AtBeginEnvironment{tabularx}{\setstretch{1.0}}
+
+% ---------------------------------------------------------------- Packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[table]{xcolor}
+\usepackage{booktabs,array,tabularx,multirow,makecell,longtable}
+\usepackage{threeparttable}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage[section]{placeins}
+\usepackage{float}
+\usepackage{needspace}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+\usetikzlibrary{calc,arrows.meta,positioning,shapes.geometric,fit,backgrounds,shadows}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage[most]{tcolorbox}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+\usepackage{bookmark}
+
+% ---------------------------------------------------------------- Colours
+\definecolor{accent}{HTML}{000000}      % đen (đường kẻ, khung)
+\definecolor{accentlight}{HTML}{FFFFFF}
+\definecolor{rulegray}{HTML}{8A8F98}
+\definecolor{inkmuted}{HTML}{4A4F57}
+% Mã màu nguồn số liệu (dùng nhất quán cho mọi bảng kết quả)
+\definecolor{paperhead}{HTML}{DCE8F7}   % số liệu CÔNG BỐ trong bài báo gốc
+\definecolor{paperbar}{HTML}{2A78D6}
+\definecolor{grouphead}{HTML}{DDF1E4}   % số liệu do NHÓM thực nghiệm
+\definecolor{groupbar}{HTML}{1B8A5A}
+\definecolor{comphead}{HTML}{F1E9DA}    % bảng đối chiếu bài báo – nhóm
+% Biểu đồ (bảng màu đã kiểm tra độ phân biệt cho người mù màu)
+\definecolor{serRAG}{HTML}{2A78D6}
+\definecolor{serNoRAG}{HTML}{EB6834}
+\definecolor{placeholderbg}{HTML}{FFF3C4}
+
+\hypersetup{colorlinks=true,linkcolor=black,citecolor=black,urlcolor=black,
+  pdftitle={Enhancing Next Activity Prediction in Process Mining with Retrieval-Augmented Generation},
+  pdfauthor={Nguyễn Hai Bảy},
+  pdfsubject={Báo cáo nghiên cứu và tái thực nghiệm}}
+
+% ---------------------------------------------------------------- Headings
+\titleformat{\chapter}[display]
+  {\normalfont\centering}
+  {\small\bfseries\addfontfeature{LetterSpace=18}CHƯƠNG \thechapter}
+  {6pt}
+  {\Large\bfseries}
+  [\vspace{6pt}{\color{accent}\titlerule[0.8pt]}]
+\titleformat{name=\chapter,numberless}[display]
+  {\normalfont\centering}{}{0pt}{\Large\bfseries}
+  [\vspace{6pt}{\color{accent}\titlerule[0.8pt]}]
+\titlespacing*{\chapter}{0pt}{-10pt}{22pt}
+\titleformat{\section}{\normalfont\large\bfseries}{\thesection}{0.6em}{}
+\titlespacing*{\section}{0pt}{16pt plus 4pt minus 2pt}{8pt plus 2pt}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.6em}{}
+\titlespacing*{\subsection}{0pt}{12pt plus 3pt minus 2pt}{5pt plus 2pt}
+\titleformat{\subsubsection}{\normalfont\normalsize\bfseries\itshape}{}{0em}{}
+\titlespacing*{\subsubsection}{0pt}{8pt plus 2pt}{3pt}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+
+% ---------------------------------------------------------------- Captions / numbering
+\counterwithin{figure}{chapter}
+\counterwithin{table}{chapter}
+\counterwithin{equation}{chapter}
+\captionsetup{font=small,labelfont=bf,labelsep=period,skip=6pt}
+\captionsetup[figure]{name=Hình,justification=centering}
+\captionsetup[table]{name=Bảng,justification=centering,position=top}
+\renewcommand{\contentsname}{MỤC LỤC}
+\renewcommand{\listfigurename}{DANH SÁCH HÌNH VẼ}
+\renewcommand{\listtablename}{DANH SÁCH BẢNG}
+\renewcommand{\bibname}{TÀI LIỆU THAM KHẢO}
+\renewcommand{\appendixname}{Phụ lục}
+
+% ---------------------------------------------------------------- Header / footer
+\newcommand{\shorttitle}{Enhancing Next Activity Prediction with RAG}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\fancyhead[L]{\footnotesize\color{inkmuted}\nouppercase{\leftmark}}
+\fancyhead[R]{\footnotesize\itshape\color{inkmuted}\shorttitle}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{{\color{rulegray}\hrule height\headrulewidth width\headwidth}}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\small\thepage}\renewcommand{\headrulewidth}{0pt}}
+
+% ---------------------------------------------------------------- Lists
+\setlist{itemsep=2pt,topsep=4pt,parsep=0pt}
+\setlist[itemize]{leftmargin=1.2cm}
+\setlist[enumerate]{leftmargin=1.2cm}
+
+% ---------------------------------------------------------------- Tables
+\renewcommand{\arraystretch}{1.18}
+\setlength{\aboverulesep}{0.3ex}
+\setlength{\belowrulesep}{0.4ex}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+% Dòng tiêu đề bảng theo nguồn số liệu
+\newcommand{\paperrow}{}
+\newcommand{\grouprow}{}
+\newcommand{\comprow}{}
+% Dòng ghi nguồn dưới bảng/hình
+\newcommand{\source}[1]{\par\vspace{3pt}{\footnotesize\color{inkmuted}\textit{Nguồn:} #1}\par}
+
+% ---------------------------------------------------------------- Boxes
+\newtcolorbox{rqbox}{enhanced,breakable,colback=accentlight,colframe=accent,
+  boxrule=0.6pt,arc=2pt,left=8pt,right=8pt,top=6pt,bottom=6pt,before skip=8pt,after skip=8pt}
+\newtcolorbox{notebox}[1][]{enhanced,breakable,colback=white,colframe=rulegray,
+  boxrule=0.5pt,leftrule=3pt,arc=1pt,left=8pt,right=8pt,top=4pt,bottom=4pt,
+  before skip=8pt,after skip=8pt,fonttitle=\bfseries\small,coltitle=black,
+  colbacktitle=white,attach title to upper={\ \ },#1}
+% Chỗ trống cần người viết bổ sung (hiển thị nổi bật trong PDF)
+\newcommand{\placeholder}[1]{\colorbox{placeholderbg}{\footnotesize\textbf{[CẦN BỔ SUNG:} #1\textbf{]}}}
+
+% ---------------------------------------------------------------- Misc commands
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\eng}[1]{(\textit{#1})}
+\newcommand{\RQ}[1]{\textbf{RQ#1}}
+
+% ---------------------------------------------------------------- Document data
+\newcommand{\reporttitlelines}{Enhancing Next Activity Prediction\\in Process Mining with\\Retrieval-Augmented Generation}
+\newcommand{\reporttitle}{Enhancing Next Activity Prediction in Process Mining with Retrieval-Augmented Generation}
+\newcommand{\reportsubtitle}{Báo cáo nghiên cứu và tái thực nghiệm công trình của\\A.~Casciani, M.~L.~Bernardi, M.~Cimitile và A.~Marrella\\(\textit{Information Systems}, Vol.~137, 2026)}
+\newcommand{\studentname}{Nguyễn Hai Bảy}
+\newcommand{\studentid}{24022616}
+\newcommand{\major}{Hệ thống thông tin}
+\newcommand{\supervisor}{TS. Nguyễn Thị Hậu}
+\newcommand{\coursename}{Cơ sở các hệ thống thông tin}
+
+% =====================================================================
+\begin{document}
+
+% ======================= TRANG BÌA =======================
+\newcommand{\coverframe}{%
+\begin{tikzpicture}[remember picture,overlay]
+  \draw[accent,line width=1.6pt]
+    ($(current page.north west)+(1.5cm,-1.3cm)$) rectangle ($(current page.south east)+(-1.3cm,1.3cm)$);
+  \draw[accent,line width=0.5pt]
+    ($(current page.north west)+(1.7cm,-1.5cm)$) rectangle ($(current page.south east)+(-1.5cm,1.5cm)$);
+\end{tikzpicture}}
+
+\begin{titlepage}
+\coverframe
+\centering
+\setstretch{1.15}
+\vspace*{0.2cm}
+{\large\bfseries ĐẠI HỌC QUỐC GIA HÀ NỘI\par}
+{\large\bfseries TRƯỜNG ĐẠI HỌC CÔNG NGHỆ\par}
+\vspace{0.15cm}
+{\color{accent}\rule{5cm}{0.6pt}\par}
+\vspace{0.7cm}
+\includegraphics[width=3.1cm]{UET logo.pdf}\par
+\vspace{0.9cm}
+{\normalsize\bfseries\addfontfeature{LetterSpace=12}BÁO CÁO NGHIÊN CỨU CUỐI KỲ\par}
+\vspace{0.15cm}
+{\normalsize Môn học: \coursename\par}
+\vspace{1.1cm}
+{\color{accent}\rule{\linewidth}{1.2pt}\par}
+\vspace{0.45cm}
+{\huge\bfseries\setstretch{1.1}\reporttitlelines\par}
+\vspace{0.4cm}
+{\color{accent}\rule{\linewidth}{1.2pt}\par}
+\vspace{0.6cm}
+{\normalsize\itshape\setstretch{1.25}\reportsubtitle\par}
+\vfill
+{\normalsize
+\begin{tabular}{@{}l@{\hspace{0.8em}}l@{}}
+Sinh viên thực hiện: & \textbf{\studentname} \\
+Mã sinh viên:        & \studentid \\
+Ngành:               & \major \\
+Giảng viên hướng dẫn:& \textbf{\supervisor} \\
+\end{tabular}\par}
+\vspace{1.4cm}
+{\normalsize\bfseries HÀ NỘI -- 2026\par}
+\vspace*{0.1cm}
+\end{titlepage}
+
+% ======================= TRANG PHỤ BÌA =======================
+\begin{titlepage}
+\coverframe
+\centering
+\setstretch{1.15}
+\vspace*{0.2cm}
+{\large\bfseries ĐẠI HỌC QUỐC GIA HÀ NỘI\par}
+{\large\bfseries TRƯỜNG ĐẠI HỌC CÔNG NGHỆ\par}
+\vspace{0.15cm}
+{\color{accent}\rule{5cm}{0.6pt}\par}
+\vspace{2.2cm}
+{\Large\bfseries \studentname\par}
+\vspace{2.2cm}
+{\color{accent}\rule{\linewidth}{1.2pt}\par}
+\vspace{0.45cm}
+{\huge\bfseries\setstretch{1.1}\reporttitlelines\par}
+\vspace{0.4cm}
+{\color{accent}\rule{\linewidth}{1.2pt}\par}
+\vspace{0.6cm}
+{\normalsize\itshape\setstretch{1.25}\reportsubtitle\par}
+\vspace{1.6cm}
+{\normalsize\bfseries BÁO CÁO NGHIÊN CỨU CUỐI KỲ\par}
+{\normalsize Môn học: \coursename\par}
+\vspace{1.2cm}
+{\normalsize Giảng viên hướng dẫn: \textbf{\supervisor}\par}
+\vfill
+{\normalsize\bfseries HÀ NỘI -- 2026\par}
+\vspace*{0.1cm}
+\end{titlepage}
+
+% ======================= PHẦN ĐẦU =======================
+\pagenumbering{roman}
+\setcounter{page}{1}
+
+\chapter*{LỜI CẢM ƠN}
+\addcontentsline{toc}{chapter}{Lời cảm ơn}
+\markboth{Lời cảm ơn}{}
+
+Trước tiên, tôi xin gửi lời cảm ơn sâu sắc tới \supervisor, người đã trực tiếp hướng dẫn, định hướng và đóng góp nhiều ý kiến quý báu trong suốt quá trình thực hiện báo cáo này.
+
+Tôi cũng xin cảm ơn nhóm tác giả A.~Casciani, M.~L.~Bernardi, M.~Cimitile và A.~Marrella đã công bố công khai mã nguồn, dữ liệu và prompt của công trình. Đây là điều kiện để phần tái thực nghiệm trong báo cáo có thể thực hiện được.
+
+\clearpage
+\chapter*{LỜI CAM ĐOAN}
+\addcontentsline{toc}{chapter}{Lời cam đoan}
+\markboth{Lời cam đoan}{}
+
+Tôi xin cam đoan báo cáo này được thực hiện dưới sự hướng dẫn của \supervisor. Nội dung lý thuyết, phương pháp, thiết kế thực nghiệm và các kết quả được công bố (Chương~1 đến Chương~5, Mục~\ref{sec:paper-results} và Mục~\ref{sec:paper-conclusion}) là phần trình bày lại công trình của Casciani và cộng sự~\cite{casciani2026} và được trích dẫn đầy đủ. Các thiết lập, số liệu và phân tích ghi là của nhóm thực hiện (Chương~\ref{ch:replication}, Mục~\ref{sec:group-results}, Mục~\ref{sec:comparison} và các mục tương ứng ở Chương~\ref{ch:conclusion}) là kết quả thực nghiệm do tôi trực tiếp tiến hành, không sao chép từ nguồn khác.
+
+Mọi tham khảo từ các công trình khác đều được trích dẫn rõ ràng. Nếu có sai phạm, tôi xin hoàn toàn chịu trách nhiệm theo quy định của Trường Đại học Công nghệ, Đại học Quốc gia Hà Nội.
+
+\vspace{1cm}
+\begin{flushright}
+\begin{tabular}{c}
+Hà Nội, ngày \hspace{0.9cm} tháng \hspace{0.9cm} năm 2026\\[0.2cm]
+\textbf{Sinh viên}\\[1.8cm]
+\studentname
+\end{tabular}
+\end{flushright}
+
+\clearpage
+\chapter*{TÓM TẮT}
+\addcontentsline{toc}{chapter}{Tóm tắt}
+\markboth{Tóm tắt}{}
+
+Dự đoán hoạt động tiếp theo \eng{next activity prediction} là một trong những nhiệm vụ chính của giám sát quy trình dự báo \eng{Predictive Process Monitoring -- PPM}. Các mô hình học sâu dự đoán hiệu quả nhưng đòi hỏi huấn luyện và thiết kế đặc trưng tốn kém, nên khó tổng quát hoá giữa các miền. Công trình \textit{``\reporttitle''} của Casciani, Bernardi, Cimitile và Marrella~\cite{casciani2026} đề xuất một khung sử dụng mô hình ngôn ngữ lớn (LLM) kết hợp Retrieval-Augmented Generation (RAG): các prefix trace quá khứ tương tự, kèm giá trị thuộc tính, được truy xuất từ nhật ký sự kiện và đưa vào prompt, nhờ đó LLM dự đoán chính xác hơn mà không cần huấn luyện thêm. Theo các tác giả, khung đạt hiệu năng cạnh tranh với các kỹ thuật tốt nhất hiện có trên chín nhật ký sự kiện, đồng thời linh hoạt hơn giữa các miền.
+
+Báo cáo trình bày lại công trình theo cấu trúc của bài báo gốc (ba câu hỏi nghiên cứu RQ1--RQ3, kiến trúc khung, thiết kế thực nghiệm và kết quả công bố), sau đó tái thực nghiệm bằng mã nguồn công khai. Do giới hạn tài nguyên tính toán, nhóm thực hiện dùng Qwen2.5-3B-Instruct trên GPU 6~GB thay cho các LLM 7--14 tỉ tham số và gpt-4o-mini trên GPU A100 của bài báo. Vì vậy phần tái thực nghiệm không tái lập đầy đủ cấu hình gốc.
+
+Trên Sepsis Cases (300 câu hỏi, giải mã greedy), accuracy đạt 0,657 khi có RAG và 0,163 khi không có RAG (McNemar, $p < 10^{-4}$). Xu hướng tương tự xuất hiện trên tập con của BPIC 2020, BPIC 2013 Closed Problems và một nhật ký tổng hợp, phù hợp với kết luận RQ1 của tác giả. Các giá trị tuyệt đối thấp hơn số liệu công bố (Sepsis 0,70; BPIC 2013 Closed Problems 0,90; BPIC 2020 0,98). Khi đối chiếu với baseline (RQ2), khoảng tin cậy 95\% trên Sepsis chứa giá trị 0,66 của baseline tốt nhất, tức là không phát hiện được khác biệt. Quá trình đối chiếu mã nguồn công khai với bài báo ghi nhận hai điểm ảnh hưởng tới tính hợp lệ: prefix chứa chính hoạt động cần dự đoán (đã sửa), và kho truy xuất được dựng từ toàn bộ trace, kể cả trace kiểm thử (giữ nguyên và đo lường). Với giao thức này, 83--100\% câu kiểm thử có prefix trùng khớp kèm đáp án trong ngữ cảnh truy xuất, nên kết quả có RAG của nhóm cần được hiểu trong giao thức đó. Hướng tiếp theo là đánh giá lại với kho truy xuất tách biệt khỏi tập kiểm thử, trên đủ các nhật ký và với các LLM lớn hơn.
+
+\vspace{0.5cm}
+\noindent\textbf{Từ khóa:} khai phá quy trình, giám sát quy trình dự báo, dự đoán hoạt động tiếp theo, mô hình ngôn ngữ lớn, Retrieval-Augmented Generation, tái thực nghiệm.
+
+\clearpage
+\chapter*{ABSTRACT}
+\addcontentsline{toc}{chapter}{Abstract}
+\markboth{Abstract}{}
+
+Next activity prediction is one of the main tasks of Predictive Process Monitoring (PPM). Deep learning models predict effectively but require intensive training and feature engineering, which limits their generalisation across domains. In \textit{``\reporttitle''}, Casciani, Bernardi, Cimitile and Marrella~\cite{casciani2026} propose a framework in which a large language model (LLM) is supported by Retrieval-Augmented Generation (RAG). Similar past trace prefixes and their attribute values are retrieved from the event log and inserted into the prompt, so the LLM predicts more accurately without additional training. The authors report performance competitive with state-of-the-art techniques on nine event logs, together with greater adaptability across domains.
+
+This report first presents the original work following the structure of the paper: research questions RQ1--RQ3, the framework architecture, the experimental design and the published results. It then re-executes the experiments with the public code. Because of limited computational resources, we used Qwen2.5-3B-Instruct on a 6~GB GPU instead of the 7--14B models and gpt-4o-mini run on an A100 GPU in the paper. The re-execution is therefore not a full reproduction of the original setup.
+
+On Sepsis Cases (300 questions, greedy decoding), accuracy is 0.657 with RAG and 0.163 without RAG (McNemar, $p < 10^{-4}$). The same pattern holds on subsets of BPIC 2020, BPIC 2013 Closed Problems and a synthetic log, which is consistent with the authors' RQ1 conclusion. Absolute values are lower than the published ones (Sepsis 0.70, BPIC 2013 Closed Problems 0.90, BPIC 2020 0.98). For RQ2, the 95\% confidence interval on Sepsis contains the best baseline (0.66), so no difference was detected. Comparing the public code with the paper revealed two validity issues: prefixes that contain the activity to be predicted (fixed), and a retrieval store built from all traces, including the test traces (kept and measured). Under this protocol, 83--100\% of test questions have an exactly matching prefix with its answer in the retrieved context, and our RAG results must be read accordingly. Future work should re-evaluate with a retrieval store separated from the test set, on all logs and with larger LLMs.
+
+\vspace{0.5cm}
+\noindent\textbf{Keywords:} process mining, predictive process monitoring, next activity prediction, large language models, Retrieval-Augmented Generation, re-execution.
+
+\clearpage
+\markboth{Mục lục}{}
+\tableofcontents
+\clearpage
+\markboth{Danh sách hình vẽ}{}
+\listoffigures
+\clearpage
+\markboth{Danh sách bảng}{}
+\listoftables
+\clearpage
+
+\chapter*{DANH SÁCH CÁC KÝ HIỆU VÀ CHỮ VIẾT TẮT}
+\addcontentsline{toc}{chapter}{Danh sách các ký hiệu và chữ viết tắt}
+\markboth{Ký hiệu và chữ viết tắt}{}
+
+\begin{longtable}{@{}L{3cm}L{12cm}@{}}
+\toprule
+\textbf{Ký hiệu} & \textbf{Ý nghĩa} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Ký hiệu} & \textbf{Ý nghĩa} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+BPIC & Business Process Intelligence Challenge -- bộ dữ liệu nhật ký sự kiện của cuộc thi BPI \\
+CI & Confidence Interval -- khoảng tin cậy \\
+DL & Deep Learning -- học sâu \\
+GPU / VRAM & Graphics Processing Unit / bộ nhớ của GPU \\
+ICL & In-Context Learning -- học trong ngữ cảnh \\
+LLM & Large Language Model -- mô hình ngôn ngữ lớn \\
+LoRA & Low-Rank Adaptation -- tinh chỉnh tham số hiệu quả bằng ma trận hạng thấp \\
+LSTM & Long Short-Term Memory -- mạng bộ nhớ dài-ngắn hạn \\
+NAP & Next Activity Prediction -- dự đoán hoạt động tiếp theo \\
+NF4 & 4-bit NormalFloat -- kiểu số 4 bit dùng khi lượng tử hoá trọng số \\
+PPM & Predictive Process Monitoring -- giám sát quy trình dự báo \\
+RAG & Retrieval-Augmented Generation -- sinh văn bản tăng cường truy xuất \\
+RQ & Research Question -- câu hỏi nghiên cứu của bài báo gốc \\
+MT & Mục tiêu tái thực nghiệm do nhóm thực hiện đặt ra (Mục~\ref{sec:objectives}) \\
+B1--B9 & Các vấn đề ghi nhận khi đối chiếu mã nguồn công khai (Mục~\ref{sec:audit}) \\
+XES & eXtensible Event Stream -- chuẩn định dạng nhật ký sự kiện IEEE 1849 \\
+$\sigma$, $\mathrm{hd}^k(\sigma)$ & Trace và prefix độ dài $k$ của trace \\
+$k$ & Số tài liệu (prefix) truy xuất đưa vào prompt \\
+$b$, $g$ & Base và gap của chiến lược lấy prefix \\
+\end{longtable}
+
+\clearpage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+% ======================= NỘI DUNG =======================
+\input{chapters/ch1_introduction}
+\input{chapters/ch2_background}
+\input{chapters/ch3_related_work}
+\input{chapters/ch4_methodology}
+\input{chapters/ch5_experimental_design}
+\input{chapters/ch6_replication_setup}
+\input{chapters/ch7_results}
+\input{chapters/ch8_literature}
+\input{chapters/ch8_conclusion}
+
+% ======================= TÀI LIỆU THAM KHẢO =======================
+\clearpage
+\markboth{Tài liệu tham khảo}{}
+\addcontentsline{toc}{chapter}{Tài liệu tham khảo}
+\begingroup
+\setstretch{1.1}
+\small
+\begin{thebibliography}{99}
+\setlength{\itemsep}{3pt}
+
+\bibitem{casciani2026} A.~Casciani, M.~L. Bernardi, M.~Cimitile, and A.~Marrella, ``Enhancing next activity prediction in process mining with Retrieval-Augmented Generation,'' \textit{Information Systems}, vol.~137, art.~102642, 2026. doi:10.1016/j.is.2025.102642.
+
+\bibitem{vanderaalst2016} W.~M.~P. van der Aalst, \textit{Process Mining: Data Science in Action}, 2nd~ed. Springer, 2016.
+
+\bibitem{difrancescomarino2022} C.~Di Francescomarino and C.~Ghidini, ``Predictive process monitoring,'' in \textit{Process Mining Handbook}, LNBIP, vol.~448. Springer, 2022, pp.~320--346.
+
+\bibitem{tax2017} N.~Tax, I.~Verenich, M.~La Rosa, and M.~Dumas, ``Predictive business process monitoring with LSTM neural networks,'' in \textit{CAiSE 2017}, LNCS, vol.~10253. Springer, 2017, pp.~477--492.
+
+\bibitem{maggi2014} F.~M. Maggi, C.~Di Francescomarino, M.~Dumas, and C.~Ghidini, ``Predictive monitoring of business processes,'' in \textit{CAiSE 2014}, LNCS, vol.~8484. Springer, 2014, pp.~457--472.
+
+\bibitem{rebmann2024} A.~Rebmann, F.~D. Schmidt, G.~Glavaš, and H.~van der Aa, ``Evaluating the ability of LLMs to solve semantics-aware process mining tasks,'' in \textit{ICPM 2024}. IEEE, 2024, pp.~9--16.
+
+\bibitem{difrancescomarino2018} C.~Di Francescomarino, C.~Ghidini, F.~M. Maggi, and F.~Milani, ``Predictive process monitoring methods: Which one suits me best?'' in \textit{BPM 2018}, LNCS, vol.~11080. Springer, 2018, pp.~462--479.
+
+\bibitem{oved2025} A.~Oved, S.~Shlomov, S.~Zeltyn, N.~Mashkif, and A.~Yaeli, ``SNAP: Semantic stories for next activity prediction,'' in \textit{AAAI-25}. AAAI Press, 2025, pp.~28871--28877.
+
+\bibitem{difrancescomarino2019} C.~Di Francescomarino, M.~Dumas, F.~M. Maggi, and I.~Teinemaa, ``Clustering-based predictive process monitoring,'' \textit{IEEE Trans. Services Computing}, vol.~12, no.~6, pp.~896--909, 2019.
+
+\bibitem{vaswani2017} A.~Vaswani \textit{et al.}, ``Attention is all you need,'' in \textit{Advances in Neural Information Processing Systems}, vol.~30, 2017.
+
+\bibitem{dong2024} Q.~Dong \textit{et al.}, ``A survey on in-context learning,'' in \textit{EMNLP 2024}. ACL, 2024, pp.~1107--1128.
+
+\bibitem{lewis2020} P.~Lewis \textit{et al.}, ``Retrieval-augmented generation for knowledge-intensive NLP tasks,'' in \textit{Advances in Neural Information Processing Systems}, vol.~33, 2020, pp.~9459--9474.
+
+\bibitem{reimers2019} N.~Reimers and I.~Gurevych, ``Sentence-BERT: Sentence embeddings using Siamese BERT-networks,'' in \textit{EMNLP-IJCNLP 2019}, 2019, pp.~3982--3992.
+
+\bibitem{aversano2023} L.~Aversano, M.~L. Bernardi, M.~Cimitile, M.~Iammarino, and C.~Verdone, ``A data-aware explainable deep learning approach for next activity prediction,'' \textit{Engineering Applications of Artificial Intelligence}, vol.~126, art.~106758, 2023.
+
+\bibitem{marquez2018} A.~E. Márquez-Chamorro, M.~Resinas, and A.~Ruiz-Cortés, ``Predictive monitoring of business processes: A survey,'' \textit{IEEE Trans. Services Computing}, vol.~11, no.~6, pp.~962--977, 2018.
+
+\bibitem{theis2019} J.~Theis and H.~Darabi, ``Decay replay mining to predict next process events,'' \textit{IEEE Access}, vol.~7, pp.~119787--119803, 2019.
+
+\bibitem{evermann2017} J.~Evermann, J.-R. Rehse, and P.~Fettke, ``Predicting process behaviour using deep learning,'' \textit{Decision Support Systems}, vol.~100, pp.~129--140, 2017.
+
+\bibitem{pasquadibisceglie2019} V.~Pasquadibisceglie, A.~Appice, G.~Castellano, and D.~Malerba, ``Using convolutional neural networks for predictive process analytics,'' in \textit{ICPM 2019}. IEEE, 2019, pp.~129--136.
+
+\bibitem{mauro2019} N.~Di Mauro, A.~Appice, and T.~M.~A. Basile, ``Activity prediction of business process instances with inception CNN models,'' in \textit{AI*IA 2019}, LNCS, vol.~11946. Springer, 2019, pp.~348--361.
+
+\bibitem{camargo2019} M.~Camargo, M.~Dumas, and O.~González-Rojas, ``Learning accurate LSTM models of business processes,'' in \textit{BPM 2019}, LNCS, vol.~11675. Springer, 2019, pp.~286--302.
+
+\bibitem{lin2019} L.~Lin, L.~Wen, and J.~Wang, ``MM-Pred: A deep predictive model for multi-attribute event sequence,'' in \textit{SIAM SDM 2019}. SIAM, 2019, pp.~118--126.
+
+\bibitem{pasquadibisceglie2021} V.~Pasquadibisceglie, A.~Appice, G.~Castellano, and D.~Malerba, ``Leveraging multi-view deep learning for next activity prediction,'' in \textit{ITBPM@BPM 2021}, CEUR Workshop Proceedings, vol.~2952, 2021.
+
+\bibitem{taymouri2020} F.~Taymouri, M.~La Rosa, S.~M. Erfani, Z.~D. Bozorgi, and I.~Verenich, ``Predictive business process monitoring via generative adversarial nets: The case of next event prediction,'' arXiv:2003.11268, 2020.
+
+\bibitem{pasquadibisceglie2024lupin} V.~Pasquadibisceglie, A.~Appice, and D.~Malerba, ``LUPIN: A LLM approach for activity suffix prediction in business process event logs,'' in \textit{ICPM 2024}. IEEE, 2024, pp.~1--8.
+
+\bibitem{pasquadibisceglie2024vit} V.~Pasquadibisceglie, A.~Appice, G.~Castellano, and D.~Malerba, ``Enhancing next activity prediction with adversarial training of vision transformers,'' in \textit{SEBD 2024}, CEUR Workshop Proceedings, vol.~3741, 2024, pp.~349--358.
+
+\bibitem{ceravolo2024} P.~Ceravolo, M.~Comuzzi, J.~De Weerdt, C.~Di Francescomarino, and F.~M. Maggi, ``Predictive process monitoring: Concepts, challenges, and future research directions,'' \textit{Process Science}, vol.~1, no.~1, pp.~1--22, 2024.
+
+\bibitem{acampora2017} G.~Acampora, A.~Vitiello \textit{et al.}, ``IEEE 1849: The XES standard,'' \textit{IEEE Computational Intelligence Magazine}, vol.~12, no.~2, pp.~4--8, 2017.
+
+\bibitem{liu2024} N.~F. Liu \textit{et al.}, ``Lost in the middle: How language models use long contexts,'' \textit{Transactions of the ACL}, vol.~12, pp.~157--173, 2024.
+
+\bibitem{white2023} J.~White \textit{et al.}, ``A prompt pattern catalog to enhance prompt engineering with ChatGPT,'' arXiv:2302.11382, 2023.
+
+\bibitem{parnami2022} A.~Parnami and M.~Lee, ``Learning from few examples: A summary of approaches to few-shot learning,'' arXiv:2203.04291, 2022.
+
+\bibitem{mannhardt2017} F.~Mannhardt and D.~Blinde, ``Analyzing the trajectories of patients with sepsis using process mining,'' in \textit{RADAR+EMISA 2017}, CEUR Workshop Proceedings, vol.~1859, 2017, pp.~72--80.
+
+\bibitem{diciccio2015} C.~Di Ciccio, M.~L. Bernardi, M.~Cimitile, and F.~M. Maggi, ``Generating event logs through the simulation of Declare models,'' in \textit{EOMAS 2015}, LNBIP, vol.~231. Springer, 2015, pp.~20--36.
+
+\bibitem{weytjens2021} H.~Weytjens and J.~De Weerdt, ``Creating unbiased public benchmark datasets with data leakage prevention for predictive process monitoring,'' in \textit{BPM 2021 Workshops}, LNBIP, vol.~436. Springer, 2021, pp.~18--29.
+
+\bibitem{friedman1937} M.~Friedman, ``The use of ranks to avoid the assumption of normality implicit in the analysis of variance,'' \textit{Journal of the American Statistical Association}, vol.~32, no.~200, pp.~675--701, 1937.
+
+\bibitem{nemenyi1963} P.~B. Nemenyi, \textit{Distribution-Free Multiple Comparisons}. PhD thesis, Princeton University, 1963.
+
+\bibitem{rebmann2024data} A.~Rebmann, F.~D. Schmidt, G.~Glavaš, and H.~van der Aa, ``Process behavior corpus and benchmarking datasets,'' Zenodo, 2024. doi:10.5281/zenodo.11276246.
+
+\bibitem{ramamaneiro2021} E.~Rama-Maneiro, J.~C. Vidal, and M.~Lama, ``Deep learning for predictive business process monitoring: Review and benchmark,'' \textit{IEEE Trans. Services Computing}, vol.~16, no.~1, pp.~739--756, 2021.
+
+\bibitem{ni2023} W.~Ni, G.~Zhao, T.~Liu, Q.~Zeng, and X.~Xu, ``Predictive business process monitoring approach based on hierarchical transformer,'' \textit{Electronics}, vol.~12, no.~6, art.~1273, 2023.
+
+\bibitem{hinkka2018} M.~Hinkka, T.~Lehto, K.~Heljanko, and A.~Jung, ``Classifying process instances using recurrent neural networks,'' in \textit{BPM 2018 Workshops}, LNBIP, vol.~342. Springer, 2018, pp.~313--324.
+
+\bibitem{bukhsh2021} Z.~A. Bukhsh, A.~Saeed, and R.~M. Dijkman, ``ProcessTransformer: Predictive business process monitoring with transformer network,'' arXiv:2104.00721, 2021.
+
+\bibitem{impedovo2023} D.~Impedovo, G.~Pirlo, and G.~Semeraro, ``Next activity prediction: An application of shallow learning techniques against deep learning over the BPI Challenge 2020,'' \textit{IEEE Access}, vol.~11, pp.~117947--117953, 2023.
+
+\bibitem{abane2024} A.~Abane, A.~Bekri, and A.~Battou, ``FastRAG: Retrieval augmented generation for semi-structured data,'' arXiv:2411.13773, 2024.
+
+\bibitem{qwen2024} Qwen Team, ``Qwen2.5 technical report,'' arXiv:2412.15115, 2024.
+
+\bibitem{dettmers2023} T.~Dettmers, A.~Pagnoni, A.~Holtzman, and L.~Zettlemoyer, ``QLoRA: Efficient finetuning of quantized LLMs,'' in \textit{Advances in Neural Information Processing Systems}, vol.~36, 2023.
+
+\bibitem{holtzman2020} A.~Holtzman, J.~Buys, L.~Du, M.~Forbes, and Y.~Choi, ``The curious case of neural text degeneration,'' in \textit{ICLR 2020}, 2020.
+
+\bibitem{wilson1927} E.~B. Wilson, ``Probable inference, the law of succession, and statistical inference,'' \textit{Journal of the American Statistical Association}, vol.~22, no.~158, pp.~209--212, 1927.
+
+\bibitem{mcnemar1947} Q.~McNemar, ``Note on the sampling error of the difference between correlated proportions or percentages,'' \textit{Psychometrika}, vol.~12, no.~2, pp.~153--157, 1947.
+
+\bibitem{weytjens2026} H.~Weytjens and I.~Weber, ``David vs. Goliath in next activity prediction: Argmax vs. LSTM, Transformer, and LLM,'' arXiv:2606.15868, 2026 (accepted for the BPM 2026 Forum).
+\bibitem{bibalan2025} Y.~M. Bibalan, B.~Far, M.~Moshirpour, and B.~Ghiyasian, ``A multi-agent retrieval-augmented framework for work-in-progress prediction,'' arXiv:2512.19841, 2025 (DPPR 2025).
+\bibitem{padella2026} A.~Padella, M.~De Leoni, and M.~Dumas, ``Exploring LLM features in predictive process monitoring for small-scale event logs,'' arXiv:2601.11468, 2026.
+\bibitem{pasquadibisceglie2026} V.~Pasquadibisceglie, A.~Appice, and D.~Malerba, ``CICERONE: A natural language-based global approach for object-centric predictive process monitoring,'' \textit{Information Systems}, vol.~142, art.~102788, 2026. doi:10.1016/j.is.2026.102788.
+\bibitem{dybczak2026} N.~Dybczak, J.~Flejmer, and R.~Klimek, ``Dead-End Ratio: A behavioral model quality metric for constraint-aware runtime verification,'' in \textit{ASYDE 2026}. ACM, 2026. doi:10.1145/3843777.3844534.
+\bibitem{malerba2026} D.~Malerba \textit{et al.}, ``Data-centric AI manifesto: How data quality drives modern AI,'' \textit{Electronics}, vol.~15, no.~9, art.~1913, 2026. doi:10.3390/electronics15091913.
+\bibitem{hu2025} Y.~Hu, J.~Lu, X.~Zhao, Y.~Li, Z.~Tian, and Z.~Li, ``ProcessGFM: A domain-specific graph pretraining prototype for predictive process monitoring,'' \textit{Mathematics}, vol.~13, no.~24, art.~3991, 2025. doi:10.3390/math13243991.
+\end{thebibliography}
+\endgroup
+
+% ======================= PHỤ LỤC =======================
+\appendix
+\titleformat{\chapter}[display]
+  {\normalfont\centering}
+  {\small\bfseries\addfontfeature{LetterSpace=18}PHỤ LỤC \thechapter}
+  {6pt}{\Large\bfseries}[\vspace{6pt}{\color{accent}\titlerule[0.8pt]}]
+\input{chapters/appendix}
+
+\end{document}

@@ -104,6 +104,8 @@ def parse_arguments():
                         help='Evaluation modality to use (e.g., evaluation-concept_names, evaluation-attributes)')
     parser.add_argument('--rag', type=u.str2bool,
                         help='Support for Retrieval-Augmented Generation', default=True)
+    parser.add_argument('--max_test_samples', type=int, default=None,
+                        help='Evaluate only the first N rows of the test set CSV (a subset of the full test set). Default: all')
     parser.add_argument('--do_sample', type=u.str2bool, default=True,
                         help='Sampling (True, temperature 0.1, original behaviour) or greedy decoding (False). Local models only')
     parser.add_argument('--earlyness_buckets', type=str, 
@@ -175,6 +177,9 @@ def main():
         run_data['Activities'] = activities_set
 
     test_list = u.load_csv_questions(test_set_path)
+    if args.max_test_samples is not None and args.max_test_samples > 0:
+        test_list = test_list[:args.max_test_samples]  # prefix of the CSV -> strict subset, paired with full runs
+    run_data['Test Samples Evaluated'] = len(test_list)
     print(f"Starting evaluation with {len(test_list)} test cases...")
     print(f"Using earlyness boundaries: {earlyness_boundaries}")
     evaluate_pipeline(pipeline_instance, q_store, num_docs, test_list, run_data, earlyness_boundaries)
