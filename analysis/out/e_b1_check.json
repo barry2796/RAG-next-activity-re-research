@@ -1,0 +1,74 @@
+{
+ "sepsis": {
+  "pre_fix": [
+   300,
+   300
+  ],
+  "post_fix": [
+   37,
+   300
+  ],
+  "store_same": [
+   250,
+   1972
+  ],
+  "pairs_same": [
+   1034,
+   14164
+  ]
+ },
+ "bpic20": {
+  "pre_fix": [
+   300,
+   300
+  ],
+  "post_fix": [
+   1,
+   300
+  ],
+  "store_same": [
+   1,
+   1366
+  ],
+  "pairs_same": [
+   28,
+   65702
+  ]
+ },
+ "bpic13": {
+  "pre_fix": [
+   300,
+   300
+  ],
+  "post_fix": [
+   30,
+   300
+  ],
+  "store_same": [
+   118,
+   1144
+  ],
+  "pairs_same": [
+   268,
+   5173
+  ]
+ },
+ "synthetic13": {
+  "pre_fix": [
+   300,
+   300
+  ],
+  "post_fix": [
+   0,
+   300
+  ],
+  "store_same": [
+   0,
+   4377
+  ],
+  "pairs_same": [
+   0,
+   77814
+  ]
+ }
+}

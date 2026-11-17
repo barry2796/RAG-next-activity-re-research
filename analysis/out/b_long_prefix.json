@@ -1,0 +1,105 @@
+{
+ "max_seq_length": 128,
+ "embedding_snapshot": "a50ef00143b4d5391434df20ae11632588ac25be",
+ "2.5": {
+  "N": 300,
+  "miss": 32,
+  "miss_over_limit": 32,
+  "miss_query_cut_by_hyphen": 0,
+  "miss_min_plen": 34,
+  "miss_min_tok": 133,
+  "miss_over_with_all3_docs_identical_after_trunc": 32,
+  "hit_over_limit": 12,
+  "hit_max_tok": 506,
+  "all_over_limit": 44,
+  "min_plen_over_limit": 34
+ },
+ "3.3a": {
+  "N": 100,
+  "miss": 8,
+  "miss_over_limit": 1,
+  "miss_query_cut_by_hyphen": 7,
+  "miss_min_plen": 1,
+  "miss_min_tok": 128,
+  "miss_over_with_all3_docs_identical_after_trunc": 1,
+  "hit_over_limit": 2,
+  "hit_max_tok": 201,
+  "all_over_limit": 3,
+  "min_plen_over_limit": 13
+ },
+ "3.1a": {
+  "N": 100,
+  "miss": 0,
+  "miss_over_limit": 0,
+  "miss_query_cut_by_hyphen": 0,
+  "miss_min_plen": null,
+  "miss_min_tok": null,
+  "miss_over_with_all3_docs_identical_after_trunc": 0,
+  "hit_over_limit": 0,
+  "hit_max_tok": 128,
+  "all_over_limit": 0,
+  "min_plen_over_limit": null
+ },
+ "crosstab_2.5": {
+  "1-5|a|ok": [
+   6,
+   6
+  ],
+  "1-5|b|ok": [
+   9,
+   9
+  ],
+  "1-5|c|ok": [
+   4,
+   1
+  ],
+  "11-20|a|ok": [
+   110,
+   80
+  ],
+  "11-20|b|ok": [
+   3,
+   3
+  ],
+  "11-20|c|ok": [
+   1,
+   0
+  ],
+  "21-30|a|ok": [
+   29,
+   25
+  ],
+  "21-30|a|cut": [
+   2,
+   0
+  ],
+  "31+|a|ok": [
+   10,
+   6
+  ],
+  "31+|a|cut": [
+   7,
+   0
+  ],
+  "31+|c|ok": [
+   8,
+   1
+  ],
+  "31+|c|cut": [
+   24,
+   0
+  ],
+  "6-10|a|ok": [
+   55,
+   47
+  ],
+  "6-10|b|ok": [
+   19,
+   18
+  ],
+  "6-10|c|ok": [
+   13,
+   1
+  ]
+ }
+}

@@ -21,9 +21,9 @@
 \usepackage[a4paper,left=3cm,right=2cm,top=2.5cm,bottom=2.5cm,
             headheight=15pt,headsep=0.8cm,footskip=1.1cm]{geometry}
 \usepackage{setspace}
-\setstretch{1.35}
+\setstretch{1.28}
 \setlength{\parindent}{1cm}
-\setlength{\parskip}{3pt plus 1pt}
+\setlength{\parskip}{4pt plus 1pt minus 1pt}
 \widowpenalty=10000
 \clubpenalty=10000
 \setlength{\emergencystretch}{3em}
@@ -60,14 +60,16 @@
 % ---------------------------------------------------------------- Colours
 \definecolor{accent}{HTML}{000000}      % đen (đường kẻ, khung)
 \definecolor{accentlight}{HTML}{FFFFFF}
-\definecolor{rulegray}{HTML}{8A8F98}
+\definecolor{rulegray}{HTML}{7A7F87}
+\definecolor{tablerule}{HTML}{222222}
+\definecolor{rowgray}{HTML}{F3F4F6}
 \definecolor{inkmuted}{HTML}{4A4F57}
 % Mã màu nguồn số liệu (dùng nhất quán cho mọi bảng kết quả)
 \definecolor{paperhead}{HTML}{DCE8F7}   % số liệu CÔNG BỐ trong bài báo gốc
 \definecolor{paperbar}{HTML}{2A78D6}
-\definecolor{grouphead}{HTML}{DDF1E4}   % số liệu do NHÓM thực nghiệm
+\definecolor{grouphead}{HTML}{DDF1E4}   % số liệu do TÔI thực nghiệm
 \definecolor{groupbar}{HTML}{1B8A5A}
-\definecolor{comphead}{HTML}{F1E9DA}    % bảng đối chiếu bài báo – nhóm
+\definecolor{comphead}{HTML}{F1E9DA}    % bảng đối chiếu bài báo – tôi
 % Biểu đồ (bảng màu đã kiểm tra độ phân biệt cho người mù màu)
 \definecolor{serRAG}{HTML}{2A78D6}
 \definecolor{serNoRAG}{HTML}{EB6834}
@@ -88,11 +90,11 @@
 \titleformat{name=\chapter,numberless}[display]
   {\normalfont\centering}{}{0pt}{\Large\bfseries}
   [\vspace{6pt}{\color{accent}\titlerule[0.8pt]}]
-\titlespacing*{\chapter}{0pt}{-10pt}{22pt}
+\titlespacing*{\chapter}{0pt}{-8pt}{26pt}
 \titleformat{\section}{\normalfont\large\bfseries}{\thesection}{0.6em}{}
-\titlespacing*{\section}{0pt}{16pt plus 4pt minus 2pt}{8pt plus 2pt}
+\titlespacing*{\section}{0pt}{18pt plus 4pt minus 2pt}{9pt plus 2pt}
 \titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.6em}{}
-\titlespacing*{\subsection}{0pt}{12pt plus 3pt minus 2pt}{5pt plus 2pt}
+\titlespacing*{\subsection}{0pt}{13pt plus 3pt minus 2pt}{6pt plus 2pt}
 \titleformat{\subsubsection}{\normalfont\normalsize\bfseries\itshape}{}{0em}{}
 \titlespacing*{\subsubsection}{0pt}{8pt plus 2pt}{3pt}
 \setcounter{secnumdepth}{2}
@@ -102,7 +104,7 @@
 \counterwithin{figure}{chapter}
 \counterwithin{table}{chapter}
 \counterwithin{equation}{chapter}
-\captionsetup{font=small,labelfont=bf,labelsep=period,skip=6pt}
+\captionsetup{font=small,labelfont=bf,labelsep=period,skip=8pt,margin=0.6cm}
 \captionsetup[figure]{name=Hình,justification=centering}
 \captionsetup[table]{name=Bảng,justification=centering,position=top}
 \renewcommand{\contentsname}{MỤC LỤC}
@@ -120,6 +122,7 @@
 \fancyhead[R]{\footnotesize\itshape\color{inkmuted}\shorttitle}
 \fancyfoot[C]{\small\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
+\setlength{\headheight}{15pt}
 \renewcommand{\headrule}{{\color{rulegray}\hrule height\headrulewidth width\headwidth}}
 \fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\small\thepage}\renewcommand{\headrulewidth}{0pt}}
 
@@ -129,9 +132,15 @@
 \setlist[enumerate]{leftmargin=1.2cm}
 
 % ---------------------------------------------------------------- Tables
-\renewcommand{\arraystretch}{1.18}
-\setlength{\aboverulesep}{0.3ex}
-\setlength{\belowrulesep}{0.4ex}
+\renewcommand{\arraystretch}{1.22}
+\setlength{\aboverulesep}{0.4ex}
+\setlength{\belowrulesep}{0.5ex}
+\setlength{\heavyrulewidth}{1pt}
+\setlength{\lightrulewidth}{0.5pt}
+\setlength{\cmidrulewidth}{0.35pt}
+% Khoảng cách và vị trí khối nổi (giảm khoảng trắng bất thường)
+\renewcommand{\topfraction}{0.9}\renewcommand{\bottomfraction}{0.8}\renewcommand{\textfraction}{0.1}\renewcommand{\floatpagefraction}{0.8}
+\setlength{\textfloatsep}{16pt plus 3pt minus 4pt}\setlength{\intextsep}{14pt plus 3pt minus 4pt}\setlength{\floatsep}{12pt plus 3pt minus 3pt}
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
 \newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
@@ -140,7 +149,7 @@
 \newcommand{\grouprow}{}
 \newcommand{\comprow}{}
 % Dòng ghi nguồn dưới bảng/hình
-\newcommand{\source}[1]{\par\vspace{3pt}{\footnotesize\color{inkmuted}\textit{Nguồn:} #1}\par}
+\newcommand{\source}[1]{\par\vspace{4pt}{\footnotesize\color{inkmuted}\raggedright\textit{Nguồn:} #1\par}}
 
 % ---------------------------------------------------------------- Boxes
 \newtcolorbox{rqbox}{enhanced,breakable,colback=accentlight,colframe=accent,
@@ -173,7 +182,7 @@
 % ======================= TRANG BÌA =======================
 \newcommand{\coverframe}{%
 \begin{tikzpicture}[remember picture,overlay]
-  \draw[accent,line width=1.6pt]
+  \draw[accent,line width=1.2pt]
     ($(current page.north west)+(1.5cm,-1.3cm)$) rectangle ($(current page.south east)+(-1.3cm,1.3cm)$);
   \draw[accent,line width=0.5pt]
     ($(current page.north west)+(1.7cm,-1.5cm)$) rectangle ($(current page.south east)+(-1.5cm,1.5cm)$);
@@ -189,24 +198,23 @@
 \vspace{0.15cm}
 {\color{accent}\rule{5cm}{0.6pt}\par}
 \vspace{0.7cm}
-\includegraphics[width=3.1cm]{UET logo.pdf}\par
+\includegraphics[width=3.3cm]{UET logo.pdf}\par
 \vspace{0.9cm}
 {\normalsize\bfseries\addfontfeature{LetterSpace=12}BÁO CÁO NGHIÊN CỨU CUỐI KỲ\par}
 \vspace{0.15cm}
 {\normalsize Môn học: \coursename\par}
 \vspace{1.1cm}
-{\color{accent}\rule{\linewidth}{1.2pt}\par}
+{\color{accent}\rule{\linewidth}{0.9pt}\par}
 \vspace{0.45cm}
 {\huge\bfseries\setstretch{1.1}\reporttitlelines\par}
 \vspace{0.4cm}
-{\color{accent}\rule{\linewidth}{1.2pt}\par}
+{\color{accent}\rule{\linewidth}{0.9pt}\par}
 \vspace{0.6cm}
 {\normalsize\itshape\setstretch{1.25}\reportsubtitle\par}
 \vfill
 {\normalsize
 \begin{tabular}{@{}l@{\hspace{0.8em}}l@{}}
-Sinh viên thực hiện: & \textbf{\studentname} \\
-Mã sinh viên:        & \studentid \\
+Sinh viên thực hiện: & \textbf{\studentname} -- \studentid \\
 Ngành:               & \major \\
 Giảng viên hướng dẫn:& \textbf{\supervisor} \\
 \end{tabular}\par}
@@ -226,13 +234,15 @@ Giảng viên hướng dẫn:& \textbf{\supervisor} \\
 \vspace{0.15cm}
 {\color{accent}\rule{5cm}{0.6pt}\par}
 \vspace{2.2cm}
+{\normalsize\bfseries SINH VIÊN THỰC HIỆN\par}
+\vspace{0.3cm}
 {\Large\bfseries \studentname\par}
 \vspace{2.2cm}
-{\color{accent}\rule{\linewidth}{1.2pt}\par}
+{\color{accent}\rule{\linewidth}{0.9pt}\par}
 \vspace{0.45cm}
 {\huge\bfseries\setstretch{1.1}\reporttitlelines\par}
 \vspace{0.4cm}
-{\color{accent}\rule{\linewidth}{1.2pt}\par}
+{\color{accent}\rule{\linewidth}{0.9pt}\par}
 \vspace{0.6cm}
 {\normalsize\itshape\setstretch{1.25}\reportsubtitle\par}
 \vspace{1.6cm}
@@ -262,7 +272,7 @@ Tôi cũng xin cảm ơn nhóm tác giả A.~Casciani, M.~L.~Bernardi, M.~Cimiti
 \addcontentsline{toc}{chapter}{Lời cam đoan}
 \markboth{Lời cam đoan}{}
 
-Tôi xin cam đoan báo cáo này được thực hiện dưới sự hướng dẫn của \supervisor. Nội dung lý thuyết, phương pháp, thiết kế thực nghiệm và các kết quả được công bố (Chương~1 đến Chương~5, Mục~\ref{sec:paper-results} và Mục~\ref{sec:paper-conclusion}) là phần trình bày lại công trình của Casciani và cộng sự~\cite{casciani2026} và được trích dẫn đầy đủ. Các thiết lập, số liệu và phân tích ghi là của nhóm thực hiện (Chương~\ref{ch:replication}, Mục~\ref{sec:group-results}, Mục~\ref{sec:comparison} và các mục tương ứng ở Chương~\ref{ch:conclusion}) là kết quả thực nghiệm do tôi trực tiếp tiến hành, không sao chép từ nguồn khác.
+Tôi xin cam đoan báo cáo này được thực hiện dưới sự hướng dẫn của \supervisor. Nội dung lý thuyết, phương pháp, thiết kế thực nghiệm và các kết quả được công bố (Chương~1 đến Chương~5, Mục~\ref{sec:paper-results} và Mục~\ref{sec:paper-conclusion}) là phần trình bày lại công trình của Casciani và cộng sự~\cite{casciani2026} và được trích dẫn đầy đủ. Các thiết lập, số liệu và phân tích ghi là của tôi (Chương~\ref{ch:replication}, Mục~\ref{sec:group-results}, Mục~\ref{sec:comparison}, Chương~\ref{ch:literature} và các mục tương ứng ở Chương~\ref{ch:conclusion}) là kết quả do tôi trực tiếp tiến hành, không sao chép từ nguồn khác.
 
 Mọi tham khảo từ các công trình khác đều được trích dẫn rõ ràng. Nếu có sai phạm, tôi xin hoàn toàn chịu trách nhiệm theo quy định của Trường Đại học Công nghệ, Đại học Quốc gia Hà Nội.
 
@@ -282,9 +292,9 @@ Hà Nội, ngày \hspace{0.9cm} tháng \hspace{0.9cm} năm 2026\\[0.2cm]
 
 Dự đoán hoạt động tiếp theo \eng{next activity prediction} là một trong những nhiệm vụ chính của giám sát quy trình dự báo \eng{Predictive Process Monitoring -- PPM}. Các mô hình học sâu dự đoán hiệu quả nhưng đòi hỏi huấn luyện và thiết kế đặc trưng tốn kém, nên khó tổng quát hoá giữa các miền. Công trình \textit{``\reporttitle''} của Casciani, Bernardi, Cimitile và Marrella~\cite{casciani2026} đề xuất một khung sử dụng mô hình ngôn ngữ lớn (LLM) kết hợp Retrieval-Augmented Generation (RAG): các prefix trace quá khứ tương tự, kèm giá trị thuộc tính, được truy xuất từ nhật ký sự kiện và đưa vào prompt, nhờ đó LLM dự đoán chính xác hơn mà không cần huấn luyện thêm. Theo các tác giả, khung đạt hiệu năng cạnh tranh với các kỹ thuật tốt nhất hiện có trên chín nhật ký sự kiện, đồng thời linh hoạt hơn giữa các miền.
 
-Báo cáo trình bày lại công trình theo cấu trúc của bài báo gốc (ba câu hỏi nghiên cứu RQ1--RQ3, kiến trúc khung, thiết kế thực nghiệm và kết quả công bố), sau đó tái thực nghiệm bằng mã nguồn công khai. Do giới hạn tài nguyên tính toán, nhóm thực hiện dùng Qwen2.5-3B-Instruct trên GPU 6~GB thay cho các LLM 7--14 tỉ tham số và gpt-4o-mini trên GPU A100 của bài báo. Vì vậy phần tái thực nghiệm không tái lập đầy đủ cấu hình gốc.
+Báo cáo trình bày lại công trình theo cấu trúc của bài báo gốc (ba câu hỏi nghiên cứu RQ1--RQ3, kiến trúc khung, thiết kế thực nghiệm và kết quả công bố), sau đó tái thực nghiệm bằng mã nguồn công khai. Do giới hạn tài nguyên tính toán, tôi dùng Qwen2.5-3B-Instruct trên GPU 6~GB, thay cho mười LLM của bài báo (gồm các mô hình mở 1B--14B và gpt-4o-mini) chạy trên GPU A100. Vì vậy phần tái thực nghiệm không tái lập đầy đủ cấu hình gốc.
 
-Trên Sepsis Cases (300 câu hỏi, giải mã greedy), accuracy đạt 0,657 khi có RAG và 0,163 khi không có RAG (McNemar, $p < 10^{-4}$). Xu hướng tương tự xuất hiện trên tập con của BPIC 2020, BPIC 2013 Closed Problems và một nhật ký tổng hợp, phù hợp với kết luận RQ1 của tác giả. Các giá trị tuyệt đối thấp hơn số liệu công bố (Sepsis 0,70; BPIC 2013 Closed Problems 0,90; BPIC 2020 0,98). Khi đối chiếu với baseline (RQ2), khoảng tin cậy 95\% trên Sepsis chứa giá trị 0,66 của baseline tốt nhất, tức là không phát hiện được khác biệt. Quá trình đối chiếu mã nguồn công khai với bài báo ghi nhận hai điểm ảnh hưởng tới tính hợp lệ: prefix chứa chính hoạt động cần dự đoán (đã sửa), và kho truy xuất được dựng từ toàn bộ trace, kể cả trace kiểm thử (giữ nguyên và đo lường). Với giao thức này, 83--100\% câu kiểm thử có prefix trùng khớp kèm đáp án trong ngữ cảnh truy xuất, nên kết quả có RAG của nhóm cần được hiểu trong giao thức đó. Hướng tiếp theo là đánh giá lại với kho truy xuất tách biệt khỏi tập kiểm thử, trên đủ các nhật ký và với các LLM lớn hơn.
+Quá trình đối chiếu mã nguồn công khai với bài báo ghi nhận hai điểm ảnh hưởng tới tính hợp lệ: prefix chứa chính hoạt động cần dự đoán (đã sửa), và kho truy xuất được dựng từ toàn bộ trace, kể cả trace kiểm thử (giữ nguyên và đo lường). Trên Sepsis Cases (300 câu hỏi, giải mã greedy), accuracy đạt 0,657 khi có RAG và 0,163 khi không có RAG (McNemar, $p < 10^{-4}$); kết quả cùng chiều trên tập con của BPIC 2020, BPIC 2013 Closed Problems và một nhật ký tổng hợp. Tuy nhiên, với giao thức truy xuất của mã công khai, 45--73\% câu hỏi có chính prefix kiểm thử trong ngữ cảnh (rò rỉ), và 83--100\% có prefix trùng chuỗi hoạt động kèm đáp án (cận trên của rò rỉ). Mức tăng của RAG tập trung ở các câu này. Ở các câu còn lại trên Sepsis, có RAG đúng 3/50 câu so với 10/50 câu khi không có RAG. Một quy tắc chép nhãn từ ngữ cảnh, không dùng LLM, đạt 0,877 trên Sepsis, cao hơn LLM. Vì vậy kết quả \textit{chưa chứng minh} lợi ích của RAG trên ca mới, và không dùng để xác nhận kết luận RQ1 của tác giả. So sánh với các baseline trong tài liệu (RQ2) không thực hiện được, vì kết quả có RAG chịu ảnh hưởng của giao thức trên, tôi dùng gap khác và tập con nhỏ. So với số liệu công bố, accuracy của tôi thấp hơn rõ trên BPIC 2020 và BPIC 2013 Closed Problems. Trên Sepsis, khoảng tin cậy [0,601; 0,708] chứa cả 0,66 và 0,70 nên không phát hiện được khác biệt. Trên nhật ký tổng hợp, accuracy cao hơn nhiều (0,90 so với 0,40--0,47) và chưa giải thích được. Hướng tiếp theo là đánh giá lại với kho truy xuất tách theo trace khỏi tập kiểm thử, so với baseline không dùng LLM, trên đủ các nhật ký và với các LLM của bài báo.
 
 \vspace{0.5cm}
 \noindent\textbf{Từ khóa:} khai phá quy trình, giám sát quy trình dự báo, dự đoán hoạt động tiếp theo, mô hình ngôn ngữ lớn, Retrieval-Augmented Generation, tái thực nghiệm.
@@ -296,9 +306,9 @@ Trên Sepsis Cases (300 câu hỏi, giải mã greedy), accuracy đạt 0,657 kh
 
 Next activity prediction is one of the main tasks of Predictive Process Monitoring (PPM). Deep learning models predict effectively but require intensive training and feature engineering, which limits their generalisation across domains. In \textit{``\reporttitle''}, Casciani, Bernardi, Cimitile and Marrella~\cite{casciani2026} propose a framework in which a large language model (LLM) is supported by Retrieval-Augmented Generation (RAG). Similar past trace prefixes and their attribute values are retrieved from the event log and inserted into the prompt, so the LLM predicts more accurately without additional training. The authors report performance competitive with state-of-the-art techniques on nine event logs, together with greater adaptability across domains.
 
-This report first presents the original work following the structure of the paper: research questions RQ1--RQ3, the framework architecture, the experimental design and the published results. It then re-executes the experiments with the public code. Because of limited computational resources, we used Qwen2.5-3B-Instruct on a 6~GB GPU instead of the 7--14B models and gpt-4o-mini run on an A100 GPU in the paper. The re-execution is therefore not a full reproduction of the original setup.
+This report first presents the original work following the structure of the paper: research questions RQ1--RQ3, the framework architecture, the experimental design and the published results. It then re-executes the experiments with the public code. Because of limited computational resources, I used Qwen2.5-3B-Instruct on a 6~GB GPU instead of the paper's ten LLMs (open models of 1B--14B parameters and gpt-4o-mini) run on an A100 GPU. The re-execution is therefore not a full reproduction of the original setup.
 
-On Sepsis Cases (300 questions, greedy decoding), accuracy is 0.657 with RAG and 0.163 without RAG (McNemar, $p < 10^{-4}$). The same pattern holds on subsets of BPIC 2020, BPIC 2013 Closed Problems and a synthetic log, which is consistent with the authors' RQ1 conclusion. Absolute values are lower than the published ones (Sepsis 0.70, BPIC 2013 Closed Problems 0.90, BPIC 2020 0.98). For RQ2, the 95\% confidence interval on Sepsis contains the best baseline (0.66), so no difference was detected. Comparing the public code with the paper revealed two validity issues: prefixes that contain the activity to be predicted (fixed), and a retrieval store built from all traces, including the test traces (kept and measured). Under this protocol, 83--100\% of test questions have an exactly matching prefix with its answer in the retrieved context, and our RAG results must be read accordingly. Future work should re-evaluate with a retrieval store separated from the test set, on all logs and with larger LLMs.
+Comparing the public code with the paper revealed two validity issues: prefixes that contain the activity to be predicted (fixed), and a retrieval store built from all traces, including the test traces (kept and measured). On Sepsis Cases (300 questions, greedy decoding), accuracy is 0.657 with RAG and 0.163 without RAG (McNemar, $p < 10^{-4}$), and the direction is the same on subsets of BPIC 2020, BPIC 2013 Closed Problems and a synthetic log. However, under the public code's retrieval protocol, 45--73\% of the questions have the test prefix itself in the retrieved context (leakage), and 83--100\% have a prefix with the same activity sequence and the correct answer (an upper bound on leakage). The gain from RAG is concentrated on these questions; on the remaining Sepsis questions, RAG answers 3/50 correctly against 10/50 without RAG. A rule that simply copies the label from the context, without any LLM, reaches 0.877 on Sepsis, above the LLM. My results therefore do \textit{not} demonstrate a benefit of RAG on unseen cases and are not used to confirm the authors' RQ1 conclusion. A comparison with the literature baselines (RQ2) is not possible, because of this protocol, a different prefix gap and small subsets. Compared with the published figures, my accuracy is clearly lower on BPIC 2020 and BPIC 2013 Closed Problems; on Sepsis the confidence interval [0.601; 0.708] contains both 0.66 and 0.70, so no difference was detected; on the synthetic log it is much higher (0.90 against 0.40--0.47), which I cannot explain. Future work should re-evaluate with a retrieval store separated from the test set by trace, against non-LLM baselines, on all logs and with the paper's LLMs.
 
 \vspace{0.5cm}
 \noindent\textbf{Keywords:} process mining, predictive process monitoring, next activity prediction, large language models, Retrieval-Augmented Generation, re-execution.
@@ -342,8 +352,8 @@ NF4 & 4-bit NormalFloat -- kiểu số 4 bit dùng khi lượng tử hoá trọn
 PPM & Predictive Process Monitoring -- giám sát quy trình dự báo \\
 RAG & Retrieval-Augmented Generation -- sinh văn bản tăng cường truy xuất \\
 RQ & Research Question -- câu hỏi nghiên cứu của bài báo gốc \\
-MT & Mục tiêu tái thực nghiệm do nhóm thực hiện đặt ra (Mục~\ref{sec:objectives}) \\
-B1--B9 & Các vấn đề ghi nhận khi đối chiếu mã nguồn công khai (Mục~\ref{sec:audit}) \\
+MT & Mục tiêu tái thực nghiệm do tôi đặt ra (Mục~\ref{sec:objectives}) \\
+B1, B2 & Các vấn đề ghi nhận khi đối chiếu mã nguồn công khai (Mục~\ref{sec:audit}) \\
 XES & eXtensible Event Stream -- chuẩn định dạng nhật ký sự kiện IEEE 1849 \\
 $\sigma$, $\mathrm{hd}^k(\sigma)$ & Trace và prefix độ dài $k$ của trace \\
 $k$ & Số tài liệu (prefix) truy xuất đưa vào prompt \\

@@ -1,0 +1,65 @@
+{
+ "item4": {
+  "hit_2.5_first150": 124,
+  "correct_2.5_on_hits": 95,
+  "hit_4.1": 126,
+  "correct_4.1_on_hits": 34,
+  "context_differs": 22,
+  "context_differs_query_over_limit": 21,
+  "both_hit": 122,
+  "correct_3B_on_both": 95,
+  "correct_1.5B_on_both": 33
+ },
+ "item6": {
+  "records_2.1": 44,
+  "partial_blocks_2.1": 1,
+  "last_act_eq_label_2.1": 4,
+  "encoding_2.1": "utf-8",
+  "has_do_sample_field": {
+   "2.1": false,
+   "2.2": false,
+   "2.3": false,
+   "2.5": true
+  },
+  "activity_list_md5_first_prompt": {
+   "2.1": "2d91f2fa",
+   "2.3": "99aa8bc1",
+   "2.5": "38d195ea",
+   "2.6": "525f0e5b",
+   "4.1": "7c932c4f",
+   "4.3a": "b7763757"
+  },
+  "metrics_2.1": {
+   "Accuracy": "0.6767",
+   "Precision (macro)": "0.4618",
+   "Recall (macro)": "0.5017",
+   "F1-score (macro)": "0.4640",
+   "Total classes": "['Leucocytes', 'IV Liquid', 'ER Triage', 'Admission IC', 'Release C', 'Release E', 'ER Registration', 'LacticAcid', 'Return ER', 'Release A', 'Release D', 'CRP', 'IV Antibiotics', 'Admission NC', 'ER Sepsis Triage', 'Release B']",
+   "Elapsed time": "2.76 hours",
+   "Average time per prediction": "33.1662 seconds"
+  },
+  "metrics_2.3": {
+   "Accuracy": "0.6333",
+   "Precision (macro)": "0.6153",
+   "Recall (macro)": "0.5587",
+   "F1-score (macro)": "0.5582",
+   "Total classes": "['Admission NC', 'ER Registration', 'Leucocytes', 'IV Liquid', 'IV Antibiotics', 'Release D', 'LacticAcid', 'Admission IC', 'Release C', 'CRP', 'ER Triage', 'Return ER', 'Release E', 'Release A', 'Release B', 'ER Sepsis Triage']",
+   "Elapsed time": "2.83 hours",
+   "Average time per prediction": "33.9718 seconds"
+  }
+ },
+ "item7": {
+  "files_with_per_question_time": [],
+  "files_checked": 24
+ },
+ "extra": {
+  "pred_label_differs_2.3_vs_2.5": 99,
+  "raw_boxed_string_differs_2.3_vs_2.5": 129,
+  "oracle_reimpl_matches_verdict_2.5": 300,
+  "4.1_no_boxed": 40,
+  "4.1_no_boxed_capped_2048": 7,
+  "4.1_no_boxed_bold_label": 33,
+  "2.5_first150_no_boxed": 16,
+  "2.5_first150_capped": 16
+ }
+}
